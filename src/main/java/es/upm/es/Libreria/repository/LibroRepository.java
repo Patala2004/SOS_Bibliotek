@@ -1,0 +1,16 @@
+package es.upm.es.Libreria.repository;
+
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+
+import es.upm.es.Libreria.model.Libro;
+
+public interface LibroRepository extends JpaRepository<Libro, Integer>{
+    
+    boolean existsByNombre(String nombre);
+    Page<Libro> findByNombre(@Param("nombre") String nombre, Pageable paginable);
+    Page<Libro> findByNombreStartsWith(@Param("starts_with") String starts_with, Pageable paginable);
+    
+
+}
