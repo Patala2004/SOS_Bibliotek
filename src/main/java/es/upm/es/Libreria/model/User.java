@@ -1,9 +1,14 @@
 package es.upm.es.Libreria.model;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -30,5 +35,10 @@ public class User extends RepresentationModel<User>{
 
     @NotNull(message = "El correo del usuario es obligatorio y no puede ser null")
     private String email;
+
+    @Transient // Indica que puede ser que el campo esté vacío
+    @Schema(hidden = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Set<EntityModel<UserLibroDTO>> prestamos;
 
 }

@@ -2,6 +2,7 @@ package es.upm.es.Libreria.controller;
 
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +11,15 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import es.upm.es.Libreria.exception.*;
 import es.upm.es.Libreria.model.*;
+import es.upm.es.Libreria.repository.LibroRepository;
+import es.upm.es.Libreria.repository.UserLibroRepository;
 import es.upm.es.Libreria.repository.UserRepository;
+import es.upm.es.Libreria.service.LibroService;
+import es.upm.es.Libreria.service.UserLibroService;
 import es.upm.es.Libreria.service.UserService;
 import jakarta.validation.Valid;
+
+import java.util.*;
 
 import lombok.AllArgsConstructor;
 
@@ -28,8 +35,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class UserController {
     private final UserService service;
 
+    private final LibroService libroService;
+    private final UserLibroService userLibroService;
+
 
     private final UserRepository repository;
+    private final LibroRepository repositoryLibro;
+    private final UserLibroRepository repositoryUserLibro;
 
     private PagedResourcesAssembler<User> pagedResourcesAssembler;
     private UserModelAssembler userModelAssembler;
@@ -53,6 +65,15 @@ public class UserController {
         User user = service.buscarPorId(id)
         .orElseThrow(() -> new UserNotFoundException(id));
 
+        Set<EntityModel<UserLibroDTO>> prestamos = new HashSet<>();
+        for(UserLibro userLibroEntity : userLibroService.buscarPorUserId(id)){
+            UserLibroDTO userLibroDTO = new UserLibroDTO(userLibroEntity.getId(), userLibroEntity.getLibro());
+            userLibroDTO.getLibro().add(linkTo(methodOn(LibroController.class).getLibro(userLibroEntity.getLibro().getId())).withSelfRel());
+            prestamos.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
+        }
+
+
+        user.setPrestamos(prestamos);
         user.add(linkTo(methodOn(UserController.class).getUser(id)).withSelfRel());
         return ResponseEntity.ok(user);
     }
@@ -60,10 +81,13 @@ public class UserController {
     //Put
     @PutMapping("/{id}")
     public ResponseEntity<Void> replaceUser(@Valid @RequestBody User newUser, @PathVariable Integer id) {
-        service.buscarPorId(id).map(User -> {
-            User.setNombre(newUser.getNombre());
-            return service.crearUsuario(User);
-        }).orElseThrow(() -> new LibroNotFoundException(id));
+        service.buscarPorId(id).map(user -> {
+            user.setNombre(newUser.getNombre());
+            user.setEmail(newUser.getEmail());
+            user.setMatricula(newUser.getMatricula());
+            user.setFechaNacimiento(newUser.getFechaNacimiento());
+            return service.crearUsuario(user);
+        }).orElseThrow(() -> new UserNotFoundException(id));
 
         return ResponseEntity.noContent().build();
     }
@@ -86,7 +110,20 @@ public class UserController {
     @RequestParam(defaultValue="0", required = false) int page,
     @RequestParam(defaultValue="2", required = false) int size) {
 
-        Page<User> libros = service.buscarUsuarios(starts_with, page, size);
-        return ResponseEntity.ok(pagedResourcesAssembler.toModel(libros, userModelAssembler));
+        Page<User> users = service.buscarUsuarios(starts_with, page, size);
+        return ResponseEntity.ok(pagedResourcesAssembler.toModel(users, userModelAssembler));
     }
+
+    // // hacer prestamo
+    // @PostMapping("/{id}/libros")
+    // public ResponseEntity<Void> addLibroToUser(@PathVariable Integer id, @Valid @RequestBody UserLibroId nuevoUserLibro) {
+    //     User user = service.buscarPorId(id)
+    //     .orElseThrow(() -> new UserNotFoundException(id));
+
+    //     Libro libro = libroService.buscarPorId(nuevoUserLibro.getLibroId())
+    //     .orElseThrow(() -> new LibroNotFoundException(nuevoUserLibro.getLibroId()));
+
+    //     userLibroService.empezarPrestamosParaUsuario(user, libro);
+    //     return ResponseEntity.noContent().build();
+    // }
 }

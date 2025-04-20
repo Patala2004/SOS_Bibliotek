@@ -21,6 +21,8 @@ import lombok.AllArgsConstructor;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/libros")
 @AllArgsConstructor
@@ -39,8 +41,8 @@ public class LibroController {
     @PostMapping
     ResponseEntity<Void> nuevoLibro(@Valid @RequestBody Libro nuevoLibro){
         // vemos si existe el libro
-        if(service.existeLibro(nuevoLibro.getNombre())){
-            throw new LibroExistsException(nuevoLibro.getNombre());
+        if(service.existeLibro(nuevoLibro.getTitulo())){
+            throw new LibroExistsException(nuevoLibro.getTitulo());
         }
         Libro libro = service.crearLibro(nuevoLibro);
 
@@ -82,7 +84,7 @@ public class LibroController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> replaceLibro(@Valid @RequestBody Libro newLibro, @PathVariable Integer id) {
         service.buscarPorId(id).map(Libro -> {
-            Libro.setNombre(newLibro.getNombre());
+            Libro.setTitulo(newLibro.getTitulo());
             return service.crearLibro(Libro);
         }).orElseThrow(() -> new LibroNotFoundException(id));
 
