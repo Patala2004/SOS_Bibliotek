@@ -19,8 +19,4 @@ public class UserLibroId {
     @NotNull(message = "El libroId es obligatorio y no puede ser null")
     private int libroId;
     private int userId;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 }
