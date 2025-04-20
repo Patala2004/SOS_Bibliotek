@@ -8,9 +8,7 @@ import es.upm.es.Libreria.model.Libro;
 
 public interface LibroRepository extends JpaRepository<Libro, Integer>{
     
-    boolean existsByNombre(String nombre);
-    Page<Libro> findByNombre(@Param("nombre") String nombre, Pageable paginable);
-    Page<Libro> findByNombreStartsWith(@Param("starts_with") String starts_with, Pageable paginable);
-    
-
+    boolean existsByTitulo(String titulo);
+    Page<Libro> findByTitulo(@Param("titulo") String titulo, Pageable paginable);
+    Page<Libro> findByTituloStartsWith(@Param("starts_with") String starts_with, Pageable paginable);
 }

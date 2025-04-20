@@ -14,8 +14,8 @@ import es.upm.es.Libreria.model.*;
 public class LibroService {
     private final LibroRepository repository;
 
-    public boolean existeLibro(String nombre){
-        return repository.existsByNombre(nombre);
+    public boolean existeLibro(String titulo){
+        return repository.existsByTitulo(titulo);
     }
 
     public boolean existeLibroPorId(Integer id){
@@ -38,7 +38,7 @@ public class LibroService {
             return repository.findAll(paginable);
         }
         else{
-            return repository.findByNombreStartsWith(starts_with, paginable);
+            return repository.findByTituloStartsWith(starts_with, paginable);
         }
     }
 
