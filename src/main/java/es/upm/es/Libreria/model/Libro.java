@@ -20,5 +20,17 @@ public class Libro extends RepresentationModel<Libro>{
     
     @NotNull(message = "El nombre del libro es obligatorio y no puede ser null")
     @EqualsAndHashCode.Include // campo considerado en el método equals y hash code
-    private String nombre;
+    private String titulo;
+
+    @NotNull(message = "El libro tiene que tener un autor o autores")
+    private String[] autores;
+
+    @NotNull(message = "El libro tiene que tener un numero de edicion")
+    private int edicion;
+
+    @NotNull(message = "El libro tiene que tener un numero ISBN")
+    private String ISBN;
+
+    @NotNull(message = "El libro debe pertenecer a una editorial")
+    private String editorial;
 }
