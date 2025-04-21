@@ -3,6 +3,7 @@ package es.upm.es.Libreria.controller;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,12 @@ import lombok.AllArgsConstructor;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import java.net.http.HttpResponse;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/prestamos")
@@ -50,12 +56,19 @@ public class UserLibroController {
 
     // hacer prestamo
     @PostMapping
-    public ResponseEntity<Void> addLibroToUser(@Valid @RequestBody UserLibroId nuevoUserLibro) {
+    public ResponseEntity<Void> crearPrestamo(@Valid @RequestBody UserLibroId nuevoUserLibro) {
         User user = userService.buscarPorId(nuevoUserLibro.getUserId())
         .orElseThrow(() -> new UserNotFoundException(nuevoUserLibro.getUserId()));
 
         Libro libro = libroService.buscarPorId(nuevoUserLibro.getLibroId())
         .orElseThrow(() -> new LibroNotFoundException(nuevoUserLibro.getLibroId()));
+
+        if(!libro.isDisponible()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        libro.setDisponible(false); // Ya no esta disponible
+        libroService.crearLibro(libro); // Guardar el no dispnible en el libro
 
         service.empezarPrestamosParaUsuario(user, libro);
         return ResponseEntity.noContent().build();
@@ -74,6 +87,36 @@ public class UserLibroController {
     public ResponseEntity<UserLibro> getPrestamo(@PathVariable Integer id) {
         UserLibro prestamo = service.buscarPorId(id);
         return ResponseEntity.ok(userLibroModelAssembler.toModel(prestamo)); // userLibroModelAssembler adds the links
+    }
+
+    @PostMapping(value = "{id}/devolver", produces = {"applictaion/json", "application/xml"})
+    public ResponseEntity<String> devolverLibro(@PathVariable Integer id){
+        UserLibro prestamo = service.buscarPorId(id);
+
+        if(prestamo.isDevuelto()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Date today = Date.valueOf(LocalDate.now());
+
+        String result;
+
+        if(prestamo.getFechaFin().compareTo(today) < 0){
+            // poner logica de que se ha devuelto muy tarde
+            result = "el libro no se ha devuelto a tiempo. Se ha aplicado una sanción de una semana";
+        }
+        else{
+            result = "el libro se ha devuelto a tiempo";
+        }
+
+        prestamo.setDevuelto(true);
+
+        // Poner libro como disponible otra vez
+        Libro libro = prestamo.getLibro();
+        libro.setDisponible(true);
+        libroService.crearLibro(libro); // Guardar cambios del libro
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
     
 }

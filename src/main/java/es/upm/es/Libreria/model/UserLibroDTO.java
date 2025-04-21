@@ -1,6 +1,10 @@
 package es.upm.es.Libreria.model;
+import java.sql.Date;
+import java.time.LocalDate;
+
 import org.springframework.data.annotation.Id;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,4 +25,10 @@ public class UserLibroDTO{
     private int id;
 
     private Libro libro;
+
+    private Date fechaInicio;
+
+    private Date fechaFin;
+
+    private boolean devuelto;
 }

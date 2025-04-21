@@ -66,14 +66,33 @@ public class UserController {
         .orElseThrow(() -> new UserNotFoundException(id));
 
         Set<EntityModel<UserLibroDTO>> prestamos = new HashSet<>();
+        Set<EntityModel<UserLibroDTO>> historial = new HashSet<>();
         for(UserLibro userLibroEntity : userLibroService.buscarPorUserId(id)){
-            UserLibroDTO userLibroDTO = new UserLibroDTO(userLibroEntity.getId(), userLibroEntity.getLibro());
-            userLibroDTO.getLibro().add(linkTo(methodOn(LibroController.class).getLibro(userLibroEntity.getLibro().getId())).withSelfRel());
-            prestamos.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
+            UserLibroDTO userLibroDTO = new UserLibroDTO(userLibroEntity.getId(), userLibroEntity.getLibro(), userLibroEntity.getFechaInicio(), userLibroEntity.getFechaFin(), userLibroEntity.isDevuelto());
+            if(userLibroDTO.getLibro().getLinks().isEmpty()){
+                userLibroDTO.getLibro().add(linkTo(methodOn(LibroController.class).getLibro(userLibroEntity.getLibro().getId())).withSelfRel());
+            }
+            
+            if(userLibroEntity.isDevuelto()){
+                historial.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
+            }
+            else{
+                prestamos.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
+            }
         }
 
+        Comparator<EntityModel<UserLibroDTO>> byFechaInicio = Comparator.comparing(
+            em -> em.getContent().getFechaInicio()
+        );
 
-        user.setPrestamos(prestamos);
+        List<EntityModel<UserLibroDTO>> prestamosOrderedList = new ArrayList<>(prestamos);
+        prestamosOrderedList.sort(byFechaInicio);
+
+        List<EntityModel<UserLibroDTO>> historialOrderedList = new ArrayList<>(historial);
+        historialOrderedList.sort(byFechaInicio);
+
+        user.setPrestamos(prestamosOrderedList);
+        user.setHistorial(historialOrderedList);
         user.add(linkTo(methodOn(UserController.class).getUser(id)).withSelfRel());
         return ResponseEntity.ok(user);
     }

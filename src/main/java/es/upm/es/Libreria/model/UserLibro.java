@@ -1,10 +1,15 @@
 package es.upm.es.Libreria.model;
 
+import java.time.*;
+
+import java.sql.Date;
+
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 @Entity
 @Data
@@ -23,15 +28,18 @@ public class UserLibro extends RepresentationModel<UserLibro>{
     @ManyToOne(fetch = FetchType.EAGER) // Cada instancia UserLibro va a tener un libro
     @JoinColumn(name = "libro_id")
     private Libro libro;
+
     @ManyToOne(fetch = FetchType.EAGER) // Cada instancia UserLibro va a tener un user
     @JoinColumn(name = "user_id")
     private User user;
 
-    // "fecha_inicio": "string", 
+    @Column(name = "fechaInicio")
+    // java.sql to only save date and not time
+    private Date fechaInicio = Date.valueOf(LocalDate.now()); // Fecha en la que se hizo el prestamo (va a ser el instante de creación)
 
-    // "fecha_fin": "string", 
+    @Column(name = "fechaFin")
+    private Date fechaFin = Date.valueOf(LocalDate.now().plusDays(15)); // Fecha hasta la que se puede devolver el libro sin sancion
 
-    // "id_prestamo": "string", 
-
-    // "devolucion": "boolean"
+    @Column(name = "devuelto", nullable = false)
+    private boolean devuelto = false; // Si ha sido devuelto ya o no
 }

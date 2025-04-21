@@ -33,4 +33,6 @@ public class Libro extends RepresentationModel<Libro>{
 
     @NotNull(message = "El libro debe pertenecer a una editorial")
     private String editorial;
+
+    private boolean disponible = true; // Si puede ser null pues se va a poner como true siempre de inicial
 }
