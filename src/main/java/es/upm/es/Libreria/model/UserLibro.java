@@ -4,13 +4,18 @@ import java.time.*;
 
 import java.sql.Date;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+
 @Entity
 @Data
 @Table(name = "user_libro")
@@ -42,4 +47,9 @@ public class UserLibro extends RepresentationModel<UserLibro>{
 
     @Column(name = "devuelto", nullable = false)
     private boolean devuelto = false; // Si ha sido devuelto ya o no
+
+    // @Schema(hidden = true)
+    @Column(name = "fechaDevuelto", nullable = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Date fechaDevolucion;
 }

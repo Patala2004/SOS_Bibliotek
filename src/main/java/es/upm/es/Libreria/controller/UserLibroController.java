@@ -4,6 +4,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,15 +102,24 @@ public class UserLibroController {
 
         String result;
 
+        prestamo.setDevuelto(true);
+        prestamo.setFechaDevolucion(today);
+
         if(prestamo.getFechaFin().compareTo(today) < 0){
             // poner logica de que se ha devuelto muy tarde
             result = "el libro no se ha devuelto a tiempo. Se ha aplicado una sanción de una semana";
         }
         else{
-            result = "el libro se ha devuelto a tiempo";
+            result = "el libro se ha devuelto a tiempo. Fecha: " + prestamo.getFechaDevolucion();
         }
 
-        prestamo.setDevuelto(true);
+        
+
+        if(prestamo.getFechaDevolucion() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+        }
+
+        service.guardarPrestamo(prestamo);
 
         // Poner libro como disponible otra vez
         Libro libro = prestamo.getLibro();
