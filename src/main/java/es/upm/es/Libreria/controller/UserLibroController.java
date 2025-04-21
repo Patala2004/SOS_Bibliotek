@@ -123,6 +123,10 @@ public class UserLibroController {
     public ResponseEntity<String> ampliarPrestamo(@PathVariable Integer id, @Valid @RequestBody UserLibro newPrestamo){
         UserLibro prestamo = service.buscarPorId(id);
 
+        if(prestamo.getFechaFin().compareTo(Date.valueOf(LocalDate.now())) > 0){
+            return new ResponseEntity<>("Solo se pueden realizar amplicaciones de libros cuyo plazo no ha terminado todavía",HttpStatus.BAD_REQUEST);
+        }
+
         if(prestamo.getFechaFin().compareTo(newPrestamo.getFechaFin()) >= 0){
             return new ResponseEntity<>("La nueva fecha en una ampliación tiene que ser después que la actual fecha de devolución. La fecha actual es " + prestamo.getFechaFin()
             + " y se ha intentado poner " + newPrestamo.getFechaFin(),HttpStatus.BAD_REQUEST);
