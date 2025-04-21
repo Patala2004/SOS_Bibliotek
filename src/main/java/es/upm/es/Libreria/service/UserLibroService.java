@@ -30,12 +30,15 @@ public class UserLibroService {
     }
 
     public void empezarPrestamosParaUsuario(User user, Libro libro){
-
         UserLibro relacion = new UserLibro();
         relacion.setUser(user);
         relacion.setLibro(libro);
 
         repository.save(relacion);
+    }
+
+    public void guardarPrestamo(UserLibro prestamo){
+        repository.save(prestamo);
     }
 
     public Page<UserLibro> buscarPrestamos(boolean soloActivos, int page, int size){

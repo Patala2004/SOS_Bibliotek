@@ -118,5 +118,21 @@ public class UserLibroController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @PutMapping(value = "{id}", produces = {"application/json", "application/xml"})
+    public ResponseEntity<String> ampliarPrestamo(@PathVariable Integer id, @Valid @RequestBody UserLibro newPrestamo){
+        UserLibro prestamo = service.buscarPorId(id);
+
+        if(prestamo.getFechaFin().compareTo(newPrestamo.getFechaFin()) >= 0){
+            return new ResponseEntity<>("La nueva fecha en una ampliación tiene que ser después que la actual fecha de devolución. La fecha actual es " + prestamo.getFechaFin()
+            + " y se ha intentado poner " + newPrestamo.getFechaFin(),HttpStatus.BAD_REQUEST);
+        }
+
+        prestamo.setFechaFin(newPrestamo.getFechaFin());
+        
+        service.guardarPrestamo(prestamo);
+
+        return ResponseEntity.noContent().build();
+    }
     
 }
