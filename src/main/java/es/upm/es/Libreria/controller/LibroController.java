@@ -88,6 +88,7 @@ public class LibroController {
             libro.setAutores(newLibro.getAutores());
             libro.setEdicion(newLibro.getEdicion());
             libro.setISBN(newLibro.getISBN());
+            libro.setEditorial(newLibro.getEditorial());
             return service.crearLibro(libro);
         }).orElseThrow(() -> new LibroNotFoundException(id));
 
