@@ -83,9 +83,12 @@ public class LibroController {
     // Put libro/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Void> replaceLibro(@Valid @RequestBody Libro newLibro, @PathVariable Integer id) {
-        service.buscarPorId(id).map(Libro -> {
-            Libro.setTitulo(newLibro.getTitulo());
-            return service.crearLibro(Libro);
+        service.buscarPorId(id).map(libro -> {
+            libro.setTitulo(newLibro.getTitulo());
+            libro.setAutores(newLibro.getAutores());
+            libro.setEdicion(newLibro.getEdicion());
+            libro.setISBN(newLibro.getISBN());
+            return service.crearLibro(libro);
         }).orElseThrow(() -> new LibroNotFoundException(id));
 
         return ResponseEntity.noContent().build();
