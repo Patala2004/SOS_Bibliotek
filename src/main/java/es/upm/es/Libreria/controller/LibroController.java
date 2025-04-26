@@ -40,10 +40,9 @@ public class LibroController {
     // POST LIBRO
     @PostMapping
     ResponseEntity<Void> nuevoLibro(@Valid @RequestBody Libro nuevoLibro){
-        // vemos si existe el libro
-        if(service.existeLibro(nuevoLibro.getTitulo())){
-            throw new LibroExistsException(nuevoLibro.getTitulo());
-        }
+
+        // Libro puede tener mismo todo si hay varias copias del mismo libro
+
         Libro libro = service.crearLibro(nuevoLibro);
 
         return ResponseEntity.created(linkTo(LibroController.class).slash(libro.getId()).toUri()).build();

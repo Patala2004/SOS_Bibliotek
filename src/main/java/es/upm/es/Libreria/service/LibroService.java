@@ -14,9 +14,6 @@ import es.upm.es.Libreria.model.*;
 public class LibroService {
     private final LibroRepository repository;
 
-    public boolean existeLibro(String titulo){
-        return repository.existsByTitulo(titulo);
-    }
 
     public boolean existeLibroPorId(Integer id){
         return repository.existsById(id);
