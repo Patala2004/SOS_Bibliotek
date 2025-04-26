@@ -2,6 +2,7 @@ package es.upm.es.Libreria.controller;
 
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.data.web.PagedModel.PageMetadata;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import es.upm.es.Libreria.service.UserLibroService;
 import es.upm.es.Libreria.service.UserService;
 import jakarta.validation.Valid;
 
+import java.sql.Date;
 import java.util.*;
 
 import lombok.AllArgsConstructor;
@@ -44,7 +46,11 @@ public class UserController {
     private final UserLibroRepository repositoryUserLibro;
 
     private PagedResourcesAssembler<User> pagedResourcesAssembler;
+    private PagedResourcesAssembler<Libro> pagedLibroResourcesAssembler;
+    private PagedResourcesAssembler<UserLibro> pagedUserLibroResourcesAssembler;
     private UserModelAssembler userModelAssembler;
+    private LibroModelAssembler libroModelAssembler;
+    private UserLibroModelAssembler userLibroModelAssembler;
 
 
     // POST User
@@ -146,4 +152,50 @@ public class UserController {
     //     userLibroService.empezarPrestamosParaUsuario(user, libro);
     //     return ResponseEntity.noContent().build();
     // }
+
+    // Get histórico de libros que ha tenido prestado un usuario
+    @GetMapping(value = "{id}/historico", produces = {"application/json", "application/xml"})
+    public ResponseEntity<PagedModel<Libro>> getHistorico(
+    @PathVariable Integer id,
+    @RequestParam(defaultValue="0", required = false) int page,
+    @RequestParam(defaultValue="2", required = false) int size){
+
+        Pageable paginable = PageRequest.of(page, size);
+
+        if(!service.existeUsuarioPorId(id)) throw new UserNotFoundException(id);
+
+        List<Libro> historicoLibros = userLibroService.buscarPorUserId(id).stream()
+        .filter(prestamo -> prestamo.getFechaDevolucion() != null)
+        .sorted(Comparator.comparing(UserLibro::getFechaDevolucion).reversed())
+        .map(UserLibro::getLibro)
+        .toList();
+
+        int start = (int) paginable.getOffset();
+        int end = Math.min((start + paginable.getPageSize()), historicoLibros.size());
+        List<Libro> paginatedList = historicoLibros.subList(start, end);
+
+        Page<Libro> pageLibro = new PageImpl<>(paginatedList, paginable, historicoLibros.size());
+        return ResponseEntity.ok(pagedLibroResourcesAssembler.toModel(pageLibro, libroModelAssembler));
+    }
+
+    // Get prestamos actuales de libros que ha tenido prestado un usuario
+    @GetMapping(value = "{id}/prestamos", produces = {"application/json", "application/xml"})
+    public ResponseEntity<PagedModel<UserLibro>> getPrestamos(
+    @PathVariable Integer id,
+    @RequestParam(defaultValue="0001-01-01", required = false) Date from,
+    @RequestParam(defaultValue="9999-12-31", required = false) Date to,
+    @RequestParam(defaultValue="0", required = false) int page,
+    @RequestParam(defaultValue="2", required = false) int size){
+
+        Pageable paginable = PageRequest.of(page, size);
+
+        if(!service.existeUsuarioPorId(id)) throw new UserNotFoundException(id);
+
+        Page<UserLibro> pagePrestamos = userLibroService.findByUser_IdAndFechaDevolucionIsNull(id,from, to, paginable);
+
+        pagePrestamos.forEach(prestamo -> prestamo.setUser(null)); // Set to null para que no aparezca en el json (ya sabemos cual es el usuario)
+
+        return ResponseEntity.ok(pagedUserLibroResourcesAssembler.toModel(pagePrestamos, userLibroModelAssembler));
+    }
+
 }

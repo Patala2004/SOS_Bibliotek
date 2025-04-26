@@ -24,7 +24,7 @@ public class UserLibroModelAssembler extends RepresentationModelAssemblerSupport
             entity.getLibro().add(linkTo(methodOn(LibroController.class).getLibro(entity.getLibro().getId())).withSelfRel());
         }
     
-        if (entity.getUser().getLinks().isEmpty()) {
+        if (entity.getUser() != null && entity.getUser().getLinks().isEmpty()) {
             entity.getUser().add(linkTo(methodOn(UserController.class).getUser(entity.getUser().getId())).withSelfRel());
         }
         return entity;

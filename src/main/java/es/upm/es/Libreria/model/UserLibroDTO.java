@@ -34,4 +34,13 @@ public class UserLibroDTO{
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date fechaDevolucion;
+
+    // constructor
+    public UserLibroDTO(UserLibro userLibro){
+        this.id = userLibro.getId();
+        this.fechaInicio = userLibro.getFechaInicio();
+        this.fechaFin = userLibro.getFechaFin();
+        this.fechaDevolucion = userLibro.getFechaDevolucion();
+        this.libro = userLibro.getLibro();
+    }
 }

@@ -36,6 +36,7 @@ public class UserLibro extends RepresentationModel<UserLibro>{
 
     @ManyToOne(fetch = FetchType.EAGER) // Cada instancia UserLibro va a tener un user
     @JoinColumn(name = "user_id")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private User user;
 
     @Column(name = "fechaInicio")

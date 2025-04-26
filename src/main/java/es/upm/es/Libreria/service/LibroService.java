@@ -39,12 +39,10 @@ public class LibroService {
             return repository.findByTituloStartsWith(starts_with, paginable);
         }
         else if(starts_with == null){
-            List<Libro> filteredList = repository.findAll(paginable).stream().filter(libro -> libro.isDisponible() == disponible).toList();
-            return new PageImpl<>(filteredList, paginable, filteredList.size());
+            return repository.findByDisponible(disponible, paginable);
         }
         else{ // None are null
-            List<Libro> filteredList = repository.findByTituloStartsWith(starts_with, paginable).stream().filter(libro -> libro.isDisponible() == disponible).toList();
-            return new PageImpl<>(filteredList, paginable, filteredList.size());
+            return repository.findByTituloStartsWithAndDisponible(starts_with, disponible, paginable);
         }
     }
 

@@ -1,5 +1,6 @@
 package es.upm.es.Libreria.service;
 
+import java.sql.Date;
 import java.util.*;
 
 import org.springframework.data.domain.*;
@@ -17,6 +18,14 @@ public class UserLibroService {
 
     public List<UserLibro> buscarPorUserId(int id){
         return repository.findByUser_Id(id);
+    }
+
+    public Page<UserLibro> findByUser_IdAndFechaDevolucionIsNotNull(int id, Pageable paginable){
+        return repository.findByUser_IdAndFechaDevolucionIsNotNull(id, paginable);
+    }
+
+    public Page<UserLibro> findByUser_IdAndFechaDevolucionIsNull(int id, Date from, Date to, Pageable paginable){
+        return repository.findByUser_IdAndFechaDevolucionIsNullAndFechaInicioBetween(id, from, to, paginable);
     }
 
     public Page<UserLibro> buscarPorUserId(int id, int page, int size){
