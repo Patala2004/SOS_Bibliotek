@@ -40,6 +40,11 @@ public class User extends RepresentationModel<User>{
     @Transient // Indica que puede ser que el campo esté vacío
     @Schema(hidden = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Date sancionadoHasta; // activos
+
+    @Transient // Indica que puede ser que el campo esté vacío
+    @Schema(hidden = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<EntityModel<UserLibroDTO>> prestamos; // activos
 
     @Transient // Indica que puede ser que el campo esté vacío

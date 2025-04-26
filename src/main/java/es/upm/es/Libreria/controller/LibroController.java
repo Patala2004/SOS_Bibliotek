@@ -71,8 +71,8 @@ public class LibroController {
     // Get todos los libros
     @GetMapping(value = "", produces = {"application/json", "application/xml"})
     public ResponseEntity<PagedModel<Libro>> getLibros(
-    @RequestParam(defaultValue="", required = false) String starts_with,
-    @RequestParam(defaultValue="", required = false) Boolean disponible,
+    @RequestParam(required = false) String starts_with,
+    @RequestParam(required = false) Boolean disponible,
     @RequestParam(defaultValue="0", required = false) int page,
     @RequestParam(defaultValue="2", required = false) int size) {
 

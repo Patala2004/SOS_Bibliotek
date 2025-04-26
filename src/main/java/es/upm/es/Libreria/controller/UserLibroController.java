@@ -14,8 +14,10 @@ import es.upm.es.Libreria.assembler.LibroModelAssembler;
 import es.upm.es.Libreria.assembler.UserLibroModelAssembler;
 import es.upm.es.Libreria.assembler.UserModelAssembler;
 import es.upm.es.Libreria.exception.LibroExistsException;
+import es.upm.es.Libreria.exception.LibroNoDisponibleException;
 import es.upm.es.Libreria.exception.LibroNotFoundException;
 import es.upm.es.Libreria.exception.PrestamoNotFoundException;
+import es.upm.es.Libreria.exception.PrestamoYaDevuletoException;
 import es.upm.es.Libreria.exception.UserNotFoundException;
 import es.upm.es.Libreria.model.*;
 import es.upm.es.Libreria.repository.LibroRepository;
@@ -66,7 +68,7 @@ public class UserLibroController {
             .orElseThrow(() -> new LibroNotFoundException(nuevoUserLibro.getLibroId()));
 
         if(!libro.isDisponible()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new LibroNoDisponibleException(libro.getId());
         }
 
         libro.setDisponible(false); // Ya no esta disponible
@@ -78,10 +80,10 @@ public class UserLibroController {
 
     @GetMapping(value = "", produces = {"application/json", "application/xml"})
     public ResponseEntity<PagedModel<UserLibro>> getPrestamos(
-    @RequestParam(defaultValue="false", required = false) Boolean onlyActive, // filtrar solo prestamos activos
+    //@RequestParam(defaultValue="false", required = false) Boolean onlyActive, // filtrar solo prestamos activos
     @RequestParam(defaultValue="0", required = false) int page,
     @RequestParam(defaultValue="2", required = false) int size) {
-        Page<UserLibro> prestamos = service.buscarPrestamos(onlyActive, page, size);
+        Page<UserLibro> prestamos = service.buscarPrestamos(page, size);
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(prestamos, userLibroModelAssembler));
     }
 
@@ -97,15 +99,14 @@ public class UserLibroController {
         UserLibro prestamo = service.buscarPorId(id)
             .orElseThrow(() -> new PrestamoNotFoundException(id));;
 
-        if(prestamo.isDevuelto()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(prestamo.getFechaDevolucion() != null){
+            throw new PrestamoYaDevuletoException(id);
         }
 
         Date today = Date.valueOf(LocalDate.now());
 
         String result;
 
-        prestamo.setDevuelto(true);
         prestamo.setFechaDevolucion(today);
 
         if(prestamo.getFechaFin().compareTo(today) < 0){
@@ -137,7 +138,7 @@ public class UserLibroController {
         UserLibro prestamo = service.buscarPorId(id)
             .orElseThrow(() -> new PrestamoNotFoundException(id));;
 
-        if(prestamo.getFechaFin().compareTo(Date.valueOf(LocalDate.now())) > 0){
+        if(prestamo.getFechaFin().compareTo(Date.valueOf(LocalDate.now())) < 0){
             return new ResponseEntity<>("Solo se pueden realizar amplicaciones de libros cuyo plazo no ha terminado todavía",HttpStatus.BAD_REQUEST);
         }
 

@@ -45,9 +45,6 @@ public class UserLibro extends RepresentationModel<UserLibro>{
     @Column(name = "fechaFin")
     private Date fechaFin = Date.valueOf(LocalDate.now().plusDays(14)); // Fecha hasta la que se puede devolver el libro sin sancion
 
-    @Column(name = "devuelto", nullable = false)
-    private boolean devuelto = false; // Si ha sido devuelto ya o no
-
     // @Schema(hidden = true)
     @Column(name = "fechaDevuelto", nullable = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -41,7 +41,7 @@ public class UserLibroService {
         repository.save(prestamo);
     }
 
-    public Page<UserLibro> buscarPrestamos(boolean soloActivos, int page, int size){
+    public Page<UserLibro> buscarPrestamos(int page, int size){
         // Crear objeto Pageable usando numero de pag, tamaño y campo por el que se ordena
 
         Pageable paginable = PageRequest.of(page, size);

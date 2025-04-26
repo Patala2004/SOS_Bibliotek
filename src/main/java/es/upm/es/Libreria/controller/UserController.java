@@ -68,12 +68,12 @@ public class UserController {
         Set<EntityModel<UserLibroDTO>> prestamos = new HashSet<>();
         Set<EntityModel<UserLibroDTO>> historial = new HashSet<>();
         for(UserLibro userLibroEntity : userLibroService.buscarPorUserId(id)){
-            UserLibroDTO userLibroDTO = new UserLibroDTO(userLibroEntity.getId(), userLibroEntity.getLibro(), userLibroEntity.getFechaInicio(), userLibroEntity.getFechaFin(), userLibroEntity.isDevuelto());
+            UserLibroDTO userLibroDTO = new UserLibroDTO(userLibroEntity.getId(), userLibroEntity.getLibro(), userLibroEntity.getFechaInicio(), userLibroEntity.getFechaFin(), userLibroEntity.getFechaDevolucion());
             if(userLibroDTO.getLibro().getLinks().isEmpty()){
                 userLibroDTO.getLibro().add(linkTo(methodOn(LibroController.class).getLibro(userLibroEntity.getLibro().getId())).withSelfRel());
             }
             
-            if(userLibroEntity.isDevuelto()){
+            if(userLibroEntity.getFechaDevolucion() != null){
                 historial.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
             }
             else{
@@ -125,7 +125,7 @@ public class UserController {
     // Get todos los users
     @GetMapping(value = "", produces = {"application/json", "application/xml"})
     public ResponseEntity<PagedModel<User>> getUsers(
-    @RequestParam(defaultValue="", required = false) String starts_with,
+    @RequestParam(required = false) String starts_with,
     @RequestParam(defaultValue="0", required = false) int page,
     @RequestParam(defaultValue="2", required = false) int size) {
 

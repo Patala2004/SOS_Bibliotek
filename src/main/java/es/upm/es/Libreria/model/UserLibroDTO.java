@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.GeneratedValue;
@@ -30,5 +32,6 @@ public class UserLibroDTO{
 
     private Date fechaFin;
 
-    private boolean devuelto;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Date fechaDevolucion;
 }

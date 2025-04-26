@@ -1,3 +1,4 @@
+
 package es.upm.es.Libreria.exception;
 
 import java.util.*;
@@ -8,24 +9,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestControllerAdvice
-public class LibroExceptionAdvice {
-    @ExceptionHandler(LibroNotFoundException.class)
+public class UserLibroExceptionAdvice {
+    @ExceptionHandler(PrestamoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    ErrorMessage libroNotFoundHandler(LibroNotFoundException ex) {
+    ErrorMessage prestamoNotFoundHandler(PrestamoNotFoundException ex) {
         return new ErrorMessage(ex.getMessage());
     }
 
-    @ExceptionHandler(LibroExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    ErrorMessage libroNotFoundHandler(LibroExistsException ex) {
+	@ExceptionHandler(PrestamoYaDevuletoException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorMessage prestamoYaDevueltoHandler(PrestamoYaDevuletoException ex) {
         return new ErrorMessage(ex.getMessage());
     }
-
-    @ExceptionHandler(LibroNoDisponibleException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    ErrorMessage LibroNoDisponibleHandler(LibroNoDisponibleException ex) {
-        return new ErrorMessage(ex.getMessage());
-    }    
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -38,5 +33,4 @@ public class LibroExceptionAdvice {
         });
         return new ErrorMessage(errors.toString());
     }
-
 }
