@@ -45,10 +45,10 @@ public class User extends RepresentationModel<User>{
     @Transient // Indica que puede ser que el campo esté vacío
     @Schema(hidden = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<EntityModel<UserLibroDTO>> prestamos; // activos
+    private List<EntityModel<Libro>> prestamos; // activos
 
     @Transient // Indica que puede ser que el campo esté vacío
     @Schema(hidden = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<EntityModel<UserLibroDTO>> historial; // ya devueltos
+    private List<EntityModel<Libro>> historial; // ya devueltos
 }

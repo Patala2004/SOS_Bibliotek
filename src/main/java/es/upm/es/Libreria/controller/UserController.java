@@ -65,34 +65,35 @@ public class UserController {
         User user = service.buscarPorId(id)
         .orElseThrow(() -> new UserNotFoundException(id));
 
-        Set<EntityModel<UserLibroDTO>> prestamos = new HashSet<>();
-        Set<EntityModel<UserLibroDTO>> historial = new HashSet<>();
-        for(UserLibro userLibroEntity : userLibroService.buscarPorUserId(id)){
-            UserLibroDTO userLibroDTO = new UserLibroDTO(userLibroEntity.getId(), userLibroEntity.getLibro(), userLibroEntity.getFechaInicio(), userLibroEntity.getFechaFin(), userLibroEntity.getFechaDevolucion());
-            if(userLibroDTO.getLibro().getLinks().isEmpty()){
-                userLibroDTO.getLibro().add(linkTo(methodOn(LibroController.class).getLibro(userLibroEntity.getLibro().getId())).withSelfRel());
-            }
-            
-            if(userLibroEntity.getFechaDevolucion() != null){
-                historial.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
-            }
-            else{
-                prestamos.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
-            }
+        List<EntityModel<Libro>> prestamos = new ArrayList<>();
+        List<EntityModel<Libro>> historial = new ArrayList<>();
+
+        for(UserLibro prestamo : userLibroService.buscarPorUserId(id).stream().filter(prestamo -> prestamo.getFechaDevolucion() == null).sorted(Comparator.comparing(UserLibro::getFechaInicio).reversed()).toList()){
+            prestamos.add(EntityModel.of(prestamo.getLibro(), linkTo(methodOn(LibroController.class).getLibro(prestamo.getLibro().getId())).withSelfRel()));
         }
 
-        Comparator<EntityModel<UserLibroDTO>> byFechaInicio = Comparator.comparing(
-            em -> em.getContent().getFechaInicio()
-        );
+        int counterOnlyFive = 5;
+        for(UserLibro prestamo : userLibroService.buscarPorUserId(id).stream().filter(prestamo -> prestamo.getFechaDevolucion() != null).sorted(Comparator.comparing(UserLibro::getFechaDevolucion).reversed()).toList()){
+            if(counterOnlyFive <= 0) break;
+            historial.add(EntityModel.of(prestamo.getLibro(), linkTo(methodOn(LibroController.class).getLibro(prestamo.getLibro().getId())).withSelfRel()));
+            counterOnlyFive--;
+        }
+        // for(UserLibro userLibroEntity : userLibroService.buscarPorUserId(id)){
+        //     UserLibroDTO userLibroDTO = new UserLibroDTO(userLibroEntity.getId(), userLibroEntity.getLibro(), userLibroEntity.getFechaInicio(), userLibroEntity.getFechaFin(), userLibroEntity.getFechaDevolucion());
+        //     if(userLibroDTO.getLibro().getLinks().isEmpty()){
+        //         userLibroDTO.getLibro().add(linkTo(methodOn(LibroController.class).getLibro(userLibroEntity.getLibro().getId())).withSelfRel());
+        //     }
+            
+        //     if(userLibroEntity.getFechaDevolucion() != null){
+        //         historial.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
+        //     }
+        //     else{
+        //         prestamos.add(EntityModel.of(userLibroDTO, linkTo(methodOn(UserLibroController.class).getPrestamo(id)).withSelfRel()));
+        //     }
+        // }
 
-        List<EntityModel<UserLibroDTO>> prestamosOrderedList = new ArrayList<>(prestamos);
-        prestamosOrderedList.sort(byFechaInicio);
-
-        List<EntityModel<UserLibroDTO>> historialOrderedList = new ArrayList<>(historial);
-        historialOrderedList.sort(byFechaInicio);
-
-        user.setPrestamos(prestamosOrderedList);
-        user.setHistorial(historialOrderedList);
+        user.setPrestamos(prestamos);
+        user.setHistorial(historial);
         user.add(linkTo(methodOn(UserController.class).getUser(id)).withSelfRel());
         return ResponseEntity.ok(user);
     }
