@@ -19,6 +19,7 @@ import es.upm.es.Libreria.exception.LibroNotFoundException;
 import es.upm.es.Libreria.exception.PrestamoNotFoundException;
 import es.upm.es.Libreria.exception.PrestamoYaDevuletoException;
 import es.upm.es.Libreria.exception.UserNotFoundException;
+import es.upm.es.Libreria.exception.UserSancionadoException;
 import es.upm.es.Libreria.model.*;
 import es.upm.es.Libreria.repository.LibroRepository;
 import es.upm.es.Libreria.repository.UserLibroRepository;
@@ -69,6 +70,10 @@ public class UserLibroController {
 
         if(!libro.isDisponible()){
             throw new LibroNoDisponibleException(libro.getId());
+        }
+
+        if(user.getSancionadoHasta() != null){
+            throw new UserSancionadoException(libro.getId());
         }
 
         libro.setDisponible(false); // Ya no esta disponible

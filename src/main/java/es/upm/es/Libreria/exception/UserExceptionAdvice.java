@@ -15,6 +15,12 @@ public class UserExceptionAdvice {
         return new ErrorMessage(ex.getMessage());
     }
 
+    @ExceptionHandler(UserSancionadoException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorMessage UserSancionadoException(UserSancionadoException ex) {
+        return new ErrorMessage(ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleValidationExceptions(MethodArgumentNotValidException ex){
