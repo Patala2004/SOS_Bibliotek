@@ -27,6 +27,7 @@ import es.upm.es.Libreria.repository.UserRepository;
 import es.upm.es.Libreria.service.LibroService;
 import es.upm.es.Libreria.service.UserLibroService;
 import es.upm.es.Libreria.service.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 
 import lombok.AllArgsConstructor;
@@ -153,6 +154,22 @@ public class UserLibroController {
         }
 
         prestamo.setFechaFin(newPrestamo.getFechaFin());
+        
+        service.guardarPrestamo(prestamo);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(value = "{id}/testingURLToTestSanctionsInClient", produces = {"application/json", "application/xml"})
+    @Hidden
+    public ResponseEntity<String> cambiarPrestamoTestSecretoSecretisimo(@PathVariable Integer id, @Valid @RequestBody UserLibro newPrestamo){
+        UserLibro prestamo = service.buscarPorId(id)
+            .orElseThrow(() -> new PrestamoNotFoundException(id));;
+
+        prestamo.setFechaFin(newPrestamo.getFechaFin());
+        if(newPrestamo.getFechaDevolucion() != null){
+            prestamo.setFechaDevolucion(newPrestamo.getFechaDevolucion());
+        }
         
         service.guardarPrestamo(prestamo);
 
