@@ -15,6 +15,7 @@ import es.upm.es.Libreria.assembler.UserLibroModelAssembler;
 import es.upm.es.Libreria.assembler.UserModelAssembler;
 import es.upm.es.Libreria.exception.LibroExistsException;
 import es.upm.es.Libreria.exception.LibroNotFoundException;
+import es.upm.es.Libreria.exception.PrestamoNotFoundException;
 import es.upm.es.Libreria.exception.UserNotFoundException;
 import es.upm.es.Libreria.model.*;
 import es.upm.es.Libreria.repository.LibroRepository;
@@ -59,10 +60,10 @@ public class UserLibroController {
     @PostMapping
     public ResponseEntity<Void> crearPrestamo(@Valid @RequestBody UserLibroId nuevoUserLibro) {
         User user = userService.buscarPorId(nuevoUserLibro.getUserId())
-        .orElseThrow(() -> new UserNotFoundException(nuevoUserLibro.getUserId()));
+            .orElseThrow(() -> new UserNotFoundException(nuevoUserLibro.getUserId()));
 
         Libro libro = libroService.buscarPorId(nuevoUserLibro.getLibroId())
-        .orElseThrow(() -> new LibroNotFoundException(nuevoUserLibro.getLibroId()));
+            .orElseThrow(() -> new LibroNotFoundException(nuevoUserLibro.getLibroId()));
 
         if(!libro.isDisponible()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -86,13 +87,15 @@ public class UserLibroController {
 
     @GetMapping(value = "{id}", produces = {"application/json", "application/xml"})
     public ResponseEntity<UserLibro> getPrestamo(@PathVariable Integer id) {
-        UserLibro prestamo = service.buscarPorId(id);
+        UserLibro prestamo = service.buscarPorId(id)
+            .orElseThrow(() -> new PrestamoNotFoundException(id));
         return ResponseEntity.ok(userLibroModelAssembler.toModel(prestamo)); // userLibroModelAssembler adds the links
     }
 
     @PostMapping(value = "{id}/devolver", produces = {"applictaion/json", "application/xml"})
     public ResponseEntity<String> devolverLibro(@PathVariable Integer id){
-        UserLibro prestamo = service.buscarPorId(id);
+        UserLibro prestamo = service.buscarPorId(id)
+            .orElseThrow(() -> new PrestamoNotFoundException(id));;
 
         if(prestamo.isDevuelto()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -131,7 +134,8 @@ public class UserLibroController {
 
     @PutMapping(value = "{id}", produces = {"application/json", "application/xml"})
     public ResponseEntity<String> ampliarPrestamo(@PathVariable Integer id, @Valid @RequestBody UserLibro newPrestamo){
-        UserLibro prestamo = service.buscarPorId(id);
+        UserLibro prestamo = service.buscarPorId(id)
+            .orElseThrow(() -> new PrestamoNotFoundException(id));;
 
         if(prestamo.getFechaFin().compareTo(Date.valueOf(LocalDate.now())) > 0){
             return new ResponseEntity<>("Solo se pueden realizar amplicaciones de libros cuyo plazo no ha terminado todavía",HttpStatus.BAD_REQUEST);

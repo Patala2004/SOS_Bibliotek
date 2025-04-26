@@ -25,8 +25,8 @@ public class UserLibroService {
         return repository.findByUser_Id(id, paginable);
     }
 
-    public UserLibro buscarPorId(int id){
-        return repository.getReferenceById(id);
+    public Optional<UserLibro> buscarPorId(int id){
+        return repository.findById(id);
     }
 
     public void empezarPrestamosParaUsuario(User user, Libro libro){

@@ -73,10 +73,11 @@ public class LibroController {
     @GetMapping(value = "", produces = {"application/json", "application/xml"})
     public ResponseEntity<PagedModel<Libro>> getLibros(
     @RequestParam(defaultValue="", required = false) String starts_with,
+    @RequestParam(defaultValue="", required = false) Boolean disponible,
     @RequestParam(defaultValue="0", required = false) int page,
     @RequestParam(defaultValue="2", required = false) int size) {
 
-        Page<Libro> libros = service.buscarLibros(starts_with, page, size);
+        Page<Libro> libros = service.buscarLibros(starts_with, page, size, disponible);
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(libros, libroModelAssembler));
     }
 

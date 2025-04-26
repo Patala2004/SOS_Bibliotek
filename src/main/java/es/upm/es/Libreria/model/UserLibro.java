@@ -43,7 +43,7 @@ public class UserLibro extends RepresentationModel<UserLibro>{
     private Date fechaInicio = Date.valueOf(LocalDate.now()); // Fecha en la que se hizo el prestamo (va a ser el instante de creación)
 
     @Column(name = "fechaFin")
-    private Date fechaFin = Date.valueOf(LocalDate.now().plusDays(15)); // Fecha hasta la que se puede devolver el libro sin sancion
+    private Date fechaFin = Date.valueOf(LocalDate.now().plusDays(14)); // Fecha hasta la que se puede devolver el libro sin sancion
 
     @Column(name = "devuelto", nullable = false)
     private boolean devuelto = false; // Si ha sido devuelto ya o no
