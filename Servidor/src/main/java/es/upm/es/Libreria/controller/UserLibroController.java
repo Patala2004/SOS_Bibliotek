@@ -171,10 +171,9 @@ public class UserLibroController {
         UserLibro prestamo = service.buscarPorId(id)
             .orElseThrow(() -> new PrestamoNotFoundException(id));;
 
-        prestamo.setFechaFin(newPrestamo.getFechaFin());
-        if(newPrestamo.getFechaDevolucion() != null){
-            prestamo.setFechaDevolucion(newPrestamo.getFechaDevolucion());
-        }
+        if(newPrestamo.getFechaFin() != null) prestamo.setFechaFin(newPrestamo.getFechaFin());
+        if(newPrestamo.getFechaDevolucion() != null) prestamo.setFechaDevolucion(newPrestamo.getFechaDevolucion());
+        if(newPrestamo.getFechaInicio() != null) prestamo.setFechaInicio(newPrestamo.getFechaInicio());
         
         service.guardarPrestamo(prestamo);
 
