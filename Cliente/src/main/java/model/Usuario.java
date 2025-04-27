@@ -1,4 +1,5 @@
 package model;
+import java.sql.Date;
 
 public class Usuario {
     private int id;
@@ -6,6 +7,7 @@ public class Usuario {
     private Integer matricula;
     private String fecha_nacimiento;
     private String email;
+    private Date sancionadoHasta;
     private ResourceLink _links;
 
     public ResourceLink get_links(){
@@ -32,6 +34,10 @@ public class Usuario {
         return this.email;
     }
 
+    public Date getSancionadoHasta(){
+        return this.sancionadoHasta;
+    }
+
     public void setNombre(String name){
         this.nombre = name ;
     }
@@ -50,6 +56,10 @@ public class Usuario {
 
     public void setEmail(String correo){
         this.email = correo;
+    }
+
+    public void setSancionadoHasta(Date sancionadoHasta){
+        this.sancionadoHasta = sancionadoHasta;
     }
 }
 

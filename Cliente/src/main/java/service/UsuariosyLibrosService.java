@@ -46,6 +46,7 @@ public class UsuariosyLibrosService {
              + "\n matrícula: " + usuario.getMatricula()
              + "\n fecha de nacimiento: " + usuario.getFechaNacimiento()
              + "\n correo: " + usuario.getEmail()
+             + "\n sancionadoHasta: " + usuario.getSancionadoHasta()
              + "\n se encuentra disponible en el enlace " + selfLink );
         }
     }
@@ -546,10 +547,10 @@ public class UsuariosyLibrosService {
             .then(Mono.empty()))
             .toBodilessEntity()
             .map(response -> {
-                if(response.getHeaders().getLocation() != null){
-                    return response.getHeaders().getLocation().toString();
+                if(response.getStatusCode().is2xxSuccessful()){
+                    return "Devolucion: " + response.getStatusCode().toString();
                 }   else{
-                    throw new RuntimeException("No se recibió una URL en la cabecera Location");
+                    throw new RuntimeException("No completo la solicitud");
                 }
             })
             .block();
@@ -559,6 +560,27 @@ public class UsuariosyLibrosService {
         }   catch(RuntimeException e){
             System.err.println("Error: " + e.getMessage());
         }
+    }
+    public void putTestPrestamoAmpliar(int id,Date fechaFin){
+        Prestamo prestamo = new Prestamo();
+        if(fechaFin == null){
+            System.out.println("Cambia algun dato para hacer put");
+            return;
+        }
+        prestamo.setFechaFin(fechaFin);
+        webClient.put()
+        .uri("/prestamos/" + id + "/testingURLToTestSanctionsInClient")
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(Mono.just(prestamo),Prestamo.class)
+        .retrieve()
+        .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
+        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .then(Mono.empty()))
+        .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
+        .doOnNext(body -> System.err.println("Error 5xx: " + body))
+        .then(Mono.empty()))
+        .toBodilessEntity()
+        .block();
     }
 
 }

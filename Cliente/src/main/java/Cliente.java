@@ -78,13 +78,44 @@ public class Cliente {
         System.out.println("-- POST prestamo");
         System.out.println("-- Creamos prestamo");
         int pId1 = service.postPrestamo(lId1, uId1);
-
+        
         System.out.println("-- Creamos prestamo");
         int pId2 = service.postPrestamo(lId2, uId2);
 
         System.out.println("-- Creamos prestamo");
         int pId3 = service.postPrestamo(lId3, uId3);
 
+
+        System.out.println("-- Devolvemos el prestamo correctamente");
+        service.getPrestamoId(pId1);
+
+        service.postPrestamoDevolucion(pId1);
+
+        service.getPrestamoId(pId1);
+
+        System.out.println();
+
+        System.out.println("-- Devolvemos el prestamo fuera del plazo");
+        service.putTestPrestamoAmpliar(pId2, Date.valueOf(LocalDate.now().minusMonths(3)));
+        service.getPrestamoId(pId2);
+
+        service.postPrestamoDevolucion(pId2);
+
+        service.getPrestamoId(pId2);
+
+        System.out.println();
+
+        System.out.println("-- El usuario" + uId3 + " va prestar los tres libros");
+
+        int pId4 = service.postPrestamo(lId1, uId3);
+        int pId5 = service.postPrestamo(lId2, uId3);
+        System.out.println();
+
+        System.out.println("-- Vemos todos los libros prestados por el usuario con id " + uId3);
+
+        service.getPrestamoId(uId3);
+
+        System.out.println("-- Vemos todos los libros prestados con filtro de fechas por el usuario con id " + uId3);
         
         // Deletes
         System.out.println();
