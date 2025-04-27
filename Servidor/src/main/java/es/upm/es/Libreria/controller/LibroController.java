@@ -42,6 +42,8 @@ public class LibroController {
     ResponseEntity<Void> nuevoLibro(@Valid @RequestBody Libro nuevoLibro){
 
         // Libro puede tener mismo todo si hay varias copias del mismo libro
+        
+        nuevoLibro.setDisponible(true);
 
         Libro libro = service.crearLibro(nuevoLibro);
 
