@@ -6,6 +6,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
 
 import es.upm.es.Libreria.repository.LibroRepository;
+import es.upm.es.Libreria.repository.UserLibroRepository;
 import lombok.*;
 import es.upm.es.Libreria.model.*;
 
@@ -13,6 +14,8 @@ import es.upm.es.Libreria.model.*;
 @AllArgsConstructor
 public class LibroService {
     private final LibroRepository repository;
+
+    private final UserLibroRepository prestamoRepository;
 
 
     public boolean existeLibroPorId(Integer id){
@@ -48,6 +51,10 @@ public class LibroService {
     }
 
     public void eliminarLibro(int id){
+        List<UserLibro> prestamos = prestamoRepository.findByLibro_Id(id);
+        for(UserLibro prestamo : prestamos){
+            prestamoRepository.delete(prestamo);
+        }
         repository.deleteById(id);
     }
 }

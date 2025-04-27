@@ -75,6 +75,11 @@ public class UserService {
     }
 
     public void eliminarUsuario(int id){
+
+        List<UserLibro> prestamos = prestamoRepository.findByUser_Id(id);
+        for(UserLibro prestamo : prestamos){
+            prestamoRepository.delete(prestamo);
+        }
         repository.deleteById(id);
     }
 }
