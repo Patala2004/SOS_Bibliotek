@@ -117,10 +117,14 @@ public class UsuariosyLibrosService {
     //METODO PUT USUARIO
     public void putUsuario(int usuarioId, String nombre,Integer matricula, String fechaNacimiento, String email){
         Usuario usuario = new Usuario();
-        usuario.setNombre(nombre);
-        usuario.setMatricula(matricula);
-        usuario.setFechaNacimiento(fechaNacimiento);
-        usuario.setEmail(email);
+        if(nombre == null && matricula == null && fechaNacimiento == null && email == null){
+            System.out.println("Cambia algun dato para hacer put");
+            return;
+        }
+        if(nombre != null)usuario.setNombre(nombre);
+        if(matricula != null)usuario.setMatricula(matricula);
+        if(fechaNacimiento != null)usuario.setFechaNacimiento(fechaNacimiento);
+        if(email != null)usuario.setEmail(email);
         webClient.put()
         .uri("/usuarios/{id}",usuarioId)
         .contentType(MediaType.APPLICATION_JSON)
@@ -152,15 +156,9 @@ public class UsuariosyLibrosService {
     }
    
     //METODO GET DE LOS USUARIOS EN DISTINTAS PAGS Y SIZE
-    public void getUsuarios(String starts_with,Integer page,Integer size){
-        String pag = page == null?"":"page="+page;
-        String siz = size == null?"":"size="+size;
-        String and = (page != null && size != null)?"&":"";
-        String interrogacion = (starts_with == null &&  page == null && size == null)?"":"?";
-        String start = starts_with == null?"":"starts_with="+starts_with;
-        String and1 = (page != null && starts_with != null)?"&":"";
+    public void getUsuarios(String params){
         PageUsuario usuarios = webClient.get()
-        .uri("/usuarios" + interrogacion + start + and1 + pag + and + siz)
+        .uri("/usuarios" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
         .doOnNext(body -> System.err.println("Error 4xx: " + body))
@@ -321,14 +319,17 @@ public class UsuariosyLibrosService {
     }
 
     //METODO PUT LIBRO
-    public void putLibro(int libroId, String titulo,String[]autores,int edicion,String ISBN, String editorial, boolean disponible){
+    public void putLibro(int libroId, String titulo,String[]autores,Integer edicion,String ISBN, String editorial){
         Libro libro = new Libro();
-        libro.setTitulo(titulo);
-        libro.setAutores(autores);
-        libro.setEdicion(edicion);
-        libro.setISBN(ISBN);
-        libro.setEditorial(editorial);
-        libro.setDisponible(disponible);
+        if(titulo == null && autores == null && edicion == null && ISBN == null && editorial == null){
+            System.out.println("Cambia algun dato para hacer put");
+            return;
+        }
+        if(titulo != null) libro.setTitulo(titulo);
+        if(autores != null) libro.setAutores(autores);
+        if(edicion != null) libro.setEdicion(edicion);
+        if(ISBN != null) libro.setISBN(ISBN);
+        if(editorial != null) libro.setEditorial(editorial);
         webClient.put()
         .uri("/libros/" + libroId)
         .contentType(MediaType.APPLICATION_JSON)
@@ -360,17 +361,9 @@ public class UsuariosyLibrosService {
     }
 
     //METODO GET LIBROS
-    public void getLibros(String starts_with,Boolean disponible,Integer page,Integer size){
-        String start = starts_with == null?"":"starts_with="+starts_with;
-        String disp = disponible == null?"":"disponible="+disponible;
-        String and = (disponible != null && starts_with != null)?"&":"";
-        String pag = page == null?"":"page="+page;
-        String siz = size == null?"":"size="+size;
-        String and1 = (disponible != null && page != null)?"&":"";
-        String and2 = (page != null && size != null)?"&":"";
-        String interrogacion = (starts_with == null && disponible == null && page == null && size == null)?"":"?";
+    public void getLibros(String params){
         PageLibros libros = webClient.get()
-        .uri("/libros" + interrogacion + start + and + disp + and1 + pag + and2 + siz)
+        .uri("/libros" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
         .doOnNext(body -> System.err.println("Error 4xx: " + body))
@@ -400,13 +393,9 @@ public class UsuariosyLibrosService {
     
 
     //METODO GET PRESTAMO
-     public void getPrestamo(Integer page,Integer size){
-        String pag = page == null?"":"page="+page;
-        String siz = size == null?"":"size="+size;
-        String interrogacion = (page==null && size==null)?"":"?";
-        String and = (page != null && size != null)?"&":"";
+     public void getPrestamos(String params){
         PagePrestamo prestamos = webClient.get()
-        .uri("/prestamos" + interrogacion + pag + and + siz)
+        .uri("/prestamos" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
         .doOnNext(body -> System.err.println("Error 4xx: " + body))
@@ -512,6 +501,10 @@ public class UsuariosyLibrosService {
     //METODO PUT PRESTAMO AMPLIAR
     public void putPrestamoAmpliar(int id,Date fechaFin){
         Prestamo prestamo = new Prestamo();
+        if(fechaFin == null){
+            System.out.println("Cambia algun dato para hacer put");
+            return;
+        }
         prestamo.setFechaFin(fechaFin);
         webClient.put()
         .uri("/prestamos/" + id)

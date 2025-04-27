@@ -9,6 +9,7 @@ public class Cliente {
 
     public static void main(String[] args){
         // Usuarios
+        System.out.println("POST usuarios");
         System.out.println("Creamos usuario");
         int uId1 = service.postUsuario("pepe",220121,"2001-12-02","pepe@gmail.com");
 
@@ -21,39 +22,57 @@ public class Cliente {
 
         // GETS de usuarios
         System.out.println("Comprobaciones de los gets usuarios");
-        System.out.println("Get de todos usuarios");
-        service.getUsuarios(null,null,null);
-        System.out.println();
 
         System.out.println("Get de los datos basicos de un usario");
         service.getUsuariosBasico(uId1);
         System.out.println();
 
+        System.out.println("Get de todos usuarios");
+        service.getUsuarios("");
+        System.out.println();
+
         // PUTS de usuarios
         System.out.println("Comprobaciones de los puts de usuarios");
-        System.out.println("Cambiamos los ");
-        service.putUsuario(uId1,"pepe",190234,"2001-11-22","francisco@upm.es");
-        service.getUsuariosBasico(uId1);
+        System.out.println("Cambiamos los datos de pepe ");
+        service.putUsuario(uId1,"pepe",190234,null,"francisco@upm.es");
+        service.getUsuariosBasico(uId1); // vemos las cosas
         
 
 
 
         // Libros
         System.out.println();
+        System.out.println("POST libros");
         System.out.println("Creamos libro");
         int lId1 = service.postLibro("Hola",new String[]{"pepe","juan"},3,"129921-34","planeta",true);
 
         System.out.println("Creamos libro");
-        int lId2 = service.postLibro("Quijote",new String[]{"cervantes"},3,"12991-34","sda",true);
+        int lId2 = service.postLibro("Quijote",new String[]{"cervantes"},3,"12991-34","sda",false);
 
         System.out.println("Creamos libro");
         int lId3 = service.postLibro("Lazarillo",new String[]{"maria","pepe"},3,"1299321-12","planeta",true);
+        System.out.println();
 
+        // GETS de Libros
+        System.out.println("Comprobaciones de los gets Libros");
+
+        System.out.println("Get de todos Libros");
+        service.getLibros("");
+        System.out.println();
+        System.out.println("Get de todos Libros que contengan la a ");
+        service.getLibros("?contains=a");
+        System.out.println();
+        System.out.println("Get de todos Libros disponibles");
+        service.getLibros("?disponible=true");
+        System.out.println();
+        // PUTS de libros
+        System.out.println("Comprobaciones de los puts de libros");
+        System.out.println("Cambiamos los datos de el libro hola ");
         
         
         // Deletes
         System.out.println();
-        System.out.println();
+        System.out.println("Deletes de todos los usuarios, libros y prestamos");
         System.out.println("Delete Libro" + lId1);
         service.deleteLibro(lId1);
 
