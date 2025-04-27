@@ -85,7 +85,7 @@ public class Cliente {
         System.out.println("-- Creamos prestamo");
         int pId3 = service.postPrestamo(lId3, uId3);
 
-
+        // Devolucion
         System.out.println("-- Devolvemos el prestamo correctamente");
         service.getPrestamoId(pId1);
 
@@ -94,9 +94,9 @@ public class Cliente {
         service.getPrestamoId(pId1);
 
         System.out.println();
-
+        // Fuera de plazo
         System.out.println("-- Devolvemos el prestamo fuera del plazo");
-        service.putTestPrestamoAmpliar(pId2, Date.valueOf(LocalDate.now().minusMonths(3)));
+        service.putTestPrestamoAmpliar(pId2, Date.valueOf(LocalDate.now().minusMonths(3)),null);
         service.getPrestamoId(pId2);
 
         service.postPrestamoDevolucion(pId2);
@@ -105,18 +105,40 @@ public class Cliente {
 
         System.out.println();
 
-        System.out.println("-- El usuario" + uId3 + " va prestar los tres libros");
-
+        System.out.println("-- El usuario" + uId3 + " va prestar los dos libro devueltos el dia de despues");
         int pId4 = service.postPrestamo(lId1, uId3);
         int pId5 = service.postPrestamo(lId2, uId3);
-        System.out.println();
+        service.putTestPrestamoAmpliar(pId4, null,Date.valueOf(LocalDate.now().plusWeeks(1)));
+        service.putTestPrestamoAmpliar(pId5, null,Date.valueOf(LocalDate.now().plusWeeks(1)));
 
+
+        System.out.println();
+        // GET de los prestamos de un usuario
         System.out.println("-- Vemos todos los libros prestados por el usuario con id " + uId3);
 
-        service.getPrestamoId(uId3);
-
+        service.getUsuariosPrestamos(uId3, "?size=3");
+        System.out.println();
         System.out.println("-- Vemos todos los libros prestados con filtro de fechas por el usuario con id " + uId3);
-        
+        System.out.println("-- por ejemplo vamos a ver los libros que tuvo prestados entre " + Date.valueOf(LocalDate.now().minusWeeks(1)) + " y " + Date.valueOf(LocalDate.now().plusDays(1)));
+        service.getUsuariosPrestamos(uId3, "?" + "from=" + Date.valueOf(LocalDate.now().minusWeeks(1)) + "&" + "to=" + Date.valueOf(LocalDate.now().plusDays(1)));
+        System.out.println();
+        System.out.println();
+
+        // Ampliar
+        System.out.println("-- Ampliamos el plazo del prestamo con id" + pId3 + " hasta " +  Date.valueOf(LocalDate.now().plusWeeks(3)));
+        service.putPrestamoAmpliar(pId3, Date.valueOf(LocalDate.now().plusWeeks(3)));
+        service.getPrestamoId(pId3);
+        System.out.println();
+
+        // Historicos
+        System.out.println("-- Vemos el historico de usuario con id " + uId1);
+        service.getUsuariosHistorico(uId1);
+        System.out.println();
+
+        // Actividad
+        System.out.println("-- Vemos la actividad de usuario con id " + uId3);
+        service.getUsuarioId(uId3);
+
         // Deletes
         System.out.println();
         System.out.println("-- Deletes de todos los usuarios, libros");

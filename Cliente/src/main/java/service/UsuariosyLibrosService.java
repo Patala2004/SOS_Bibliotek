@@ -182,9 +182,9 @@ public class UsuariosyLibrosService {
     }
 
     //METODO GET DEL HISTORICO DE LOS USUARIOS
-    public void getUsuariosPrestamos(int id){
+    public void getUsuariosPrestamos(int id, String params){
         PagePrestamo prestamos = webClient.get()
-        .uri("/usuarios/" + id +"/prestamos")
+        .uri("/usuarios/" + id +"/prestamos" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
         .doOnNext(body -> System.err.println("Error 4xx: " + body))
@@ -205,11 +205,6 @@ public class UsuariosyLibrosService {
             + "\n isbn: " + prestamo.getLibro().getISBN()
             + "\n editorial: " + prestamo.getLibro().getEditorial()
             + "\n disponible: " + prestamo.getLibro().getDisponible()
-            + "\n id_usuario: " + prestamo.getUser().getId()
-            + "\n nombre: " + prestamo.getUser().getNombre()
-            + "\n matricula: " + prestamo.getUser().getMatricula()
-            + "\n fecha Nacimiento: " + prestamo.getUser().getFechaNacimiento()
-            + "\n correo: " + prestamo.getUser().getEmail()
             + "\n fecha de inicio: " + prestamo.getFechaInicio()
             + "\n fecha de fin: " + prestamo.getFechaFin()
             + "\n con devolucion " + prestamo.getFechaDevolucion()
@@ -561,13 +556,14 @@ public class UsuariosyLibrosService {
             System.err.println("Error: " + e.getMessage());
         }
     }
-    public void putTestPrestamoAmpliar(int id,Date fechaFin){
+    public void putTestPrestamoAmpliar(int id,Date fechaFin,Date fechaInicio){
         Prestamo prestamo = new Prestamo();
-        if(fechaFin == null){
+        if(fechaFin == null && fechaInicio == null){
             System.out.println("Cambia algun dato para hacer put");
             return;
         }
-        prestamo.setFechaFin(fechaFin);
+        if(fechaFin != null)prestamo.setFechaFin(fechaFin);
+        if(fechaInicio != null)prestamo.setFechaInicio(fechaInicio);
         webClient.put()
         .uri("/prestamos/" + id + "/testingURLToTestSanctionsInClient")
         .contentType(MediaType.APPLICATION_JSON)
