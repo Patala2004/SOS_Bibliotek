@@ -38,12 +38,14 @@ public class UserLibroService {
         return repository.findById(id);
     }
 
-    public void empezarPrestamosParaUsuario(User user, Libro libro){
+    public UserLibro empezarPrestamosParaUsuario(User user, Libro libro){
         UserLibro relacion = new UserLibro();
         relacion.setUser(user);
         relacion.setLibro(libro);
 
         repository.save(relacion);
+
+        return relacion;
     }
 
     public void guardarPrestamo(UserLibro prestamo){

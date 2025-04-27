@@ -82,8 +82,8 @@ public class UserLibroController {
         libro.setDisponible(false); // Ya no esta disponible
         libroService.crearLibro(libro); // Guardar el no dispnible en el libro
 
-        service.empezarPrestamosParaUsuario(user, libro);
-        return ResponseEntity.noContent().build();
+        UserLibro prestamo = service.empezarPrestamosParaUsuario(user, libro);
+        return ResponseEntity.created(linkTo(UserLibroController.class).slash(prestamo.getId()).toUri()).build();
     }
 
     @GetMapping(value = "", produces = {"application/json", "application/xml"})
