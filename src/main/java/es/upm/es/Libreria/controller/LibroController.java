@@ -71,12 +71,13 @@ public class LibroController {
     // Get todos los libros
     @GetMapping(value = "", produces = {"application/json", "application/xml"})
     public ResponseEntity<PagedModel<Libro>> getLibros(
-    @RequestParam(required = false) String starts_with,
+    @RequestParam(defaultValue="", required = false) String starts_with,
+    @RequestParam(defaultValue="", required = false) String contains,
     @RequestParam(required = false) Boolean disponible,
     @RequestParam(defaultValue="0", required = false) int page,
     @RequestParam(defaultValue="2", required = false) int size) {
 
-        Page<Libro> libros = service.buscarLibros(starts_with, page, size, disponible);
+        Page<Libro> libros = service.buscarLibros(starts_with, contains, page, size, disponible);
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(libros, libroModelAssembler));
     }
 

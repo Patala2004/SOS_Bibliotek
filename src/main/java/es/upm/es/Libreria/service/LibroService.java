@@ -27,23 +27,24 @@ public class LibroService {
         return repository.findById(id);
     }
 
-    public Page<Libro> buscarLibros(String starts_with, int page, int size, Boolean disponible){
+    public Page<Libro> buscarLibros(String starts_with, String contains, int page, int size, Boolean disponible){
         // Crear objeto Pageable usando numero de pag, tamaño y campo por el que se ordena
 
         Pageable paginable = PageRequest.of(page, size);
 
-        if(starts_with == null && disponible == null){ // Si no hay filtros validos
-            return repository.findAll(paginable);
-        }
-        else if(disponible == null){
-            return repository.findByTituloStartsWith(starts_with, paginable);
-        }
-        else if(starts_with == null){
-            return repository.findByDisponible(disponible, paginable);
-        }
-        else{ // None are null
-            return repository.findByTituloStartsWithAndDisponible(starts_with, disponible, paginable);
-        }
+        // if(starts_with == null && disponible == null){ // Si no hay filtros validos
+        //     return repository.findAll(paginable);
+        // }
+        // else if(disponible == null){
+        //     return repository.findByTituloStartsWith(starts_with, paginable);
+        // }
+        // else if(starts_with == null){
+        //     return repository.findByDisponible(disponible, paginable);
+        // }
+        // else{ // None are null
+        //     return repository.findByTituloStartsWithAndDisponible(starts_with, disponible, paginable);
+        // }
+        return repository.searchLibros(starts_with+"%", "%"+contains+"%", disponible, paginable);
     }
 
     public void eliminarLibro(int id){
