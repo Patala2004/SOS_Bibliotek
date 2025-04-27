@@ -101,12 +101,12 @@ public class UserController {
 
     //Put
     @PutMapping("/{id}")
-    public ResponseEntity<Void> replaceUser(@Valid @RequestBody User newUser, @PathVariable Integer id) {
+    public ResponseEntity<Void> replaceUser(@Valid @RequestBody UserPutDTO newUser, @PathVariable Integer id) {
         service.buscarPorId(id).map(user -> {
-            user.setNombre(newUser.getNombre());
-            user.setEmail(newUser.getEmail());
-            user.setMatricula(newUser.getMatricula());
-            user.setFechaNacimiento(newUser.getFechaNacimiento());
+            if(newUser.getNombre() != null) user.setNombre(newUser.getNombre());
+            if(newUser.getEmail() != null) user.setEmail(newUser.getEmail());
+            if(newUser.getMatricula() != null) user.setMatricula(newUser.getMatricula());
+            if(newUser.getFechaNacimiento() != null) user.setFechaNacimiento(newUser.getFechaNacimiento());
             return service.crearUsuario(user);
         }).orElseThrow(() -> new UserNotFoundException(id));
 
