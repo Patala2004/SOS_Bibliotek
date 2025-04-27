@@ -465,7 +465,7 @@ public class UsuariosyLibrosService {
     }
 
     //METODO POST PRESTAMO
-    public void postPrestamo(int idLibro,int idUsuario){
+    public int postPrestamo(int idLibro,int idUsuario){
         Prestamo prestamo = new Prestamo();
         prestamo.setLibroId(idLibro);
         prestamo.setUserId(idUsuario);
@@ -490,12 +490,18 @@ public class UsuariosyLibrosService {
                 }
             })
             .block();
-            if(referencia != null){
-                System.out.println(referencia);
+            if (referencia != null) {
+                System.out.println("Referencia: " + referencia);
+                String[] partes = referencia.split("/");
+                String idStr = partes[partes.length - 1];
+                return Integer.parseInt(idStr);
+            } else {
+                throw new RuntimeException("No se recibió referencia del usuario creado");
             }
         }   catch(RuntimeException e){
             System.err.println("Error: " + e.getMessage());
         }
+        return -1;
     }
  
     //METODO PUT PRESTAMO AMPLIAR
