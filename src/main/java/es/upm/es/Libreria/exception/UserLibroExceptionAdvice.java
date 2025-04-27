@@ -22,6 +22,18 @@ public class UserLibroExceptionAdvice {
         return new ErrorMessage(ex.getMessage());
     }
 
+    @ExceptionHandler(PrestamoAmpliationNuevaFechaInvalidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorMessage PrestamoAmpliationNuevaFechaInvalidExceptionHandler(PrestamoAmpliationNuevaFechaInvalidException ex) {
+        return new ErrorMessage(ex.getMessage());
+    }
+
+    @ExceptionHandler(PrestamoAmpliationPlazoFinalizadoException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorMessage PrestamoAmpliationPlazoFinalizadoExceptionHandler(PrestamoAmpliationPlazoFinalizadoException ex) {
+        return new ErrorMessage(ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleValidationExceptions(MethodArgumentNotValidException ex){
@@ -33,4 +45,6 @@ public class UserLibroExceptionAdvice {
         });
         return new ErrorMessage(errors.toString());
     }
+
+
 }

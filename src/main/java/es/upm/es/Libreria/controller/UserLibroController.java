@@ -16,6 +16,8 @@ import es.upm.es.Libreria.assembler.UserModelAssembler;
 import es.upm.es.Libreria.exception.LibroExistsException;
 import es.upm.es.Libreria.exception.LibroNoDisponibleException;
 import es.upm.es.Libreria.exception.LibroNotFoundException;
+import es.upm.es.Libreria.exception.PrestamoAmpliationNuevaFechaInvalidException;
+import es.upm.es.Libreria.exception.PrestamoAmpliationPlazoFinalizadoException;
 import es.upm.es.Libreria.exception.PrestamoNotFoundException;
 import es.upm.es.Libreria.exception.PrestamoYaDevuletoException;
 import es.upm.es.Libreria.exception.UserNotFoundException;
@@ -144,13 +146,16 @@ public class UserLibroController {
         UserLibro prestamo = service.buscarPorId(id)
             .orElseThrow(() -> new PrestamoNotFoundException(id));;
 
-        if(prestamo.getFechaFin().compareTo(Date.valueOf(LocalDate.now())) < 0){
-            return new ResponseEntity<>("Solo se pueden realizar amplicaciones de libros cuyo plazo no ha terminado todavía",HttpStatus.BAD_REQUEST);
+        if( prestamo.getFechaDevolucion() != null){
+            throw new PrestamoYaDevuletoException(id);
         }
 
+        if(prestamo.getFechaFin().compareTo(Date.valueOf(LocalDate.now())) < 0){
+            throw new PrestamoAmpliationPlazoFinalizadoException(id);
+        }        
+
         if(prestamo.getFechaFin().compareTo(newPrestamo.getFechaFin()) >= 0){
-            return new ResponseEntity<>("La nueva fecha en una ampliación tiene que ser después que la actual fecha de devolución. La fecha actual es " + prestamo.getFechaFin()
-            + " y se ha intentado poner " + newPrestamo.getFechaFin(),HttpStatus.BAD_REQUEST);
+            throw new PrestamoAmpliationNuevaFechaInvalidException(newPrestamo.getFechaFin(), prestamo.getFechaFin());
         }
 
         prestamo.setFechaFin(newPrestamo.getFechaFin());
