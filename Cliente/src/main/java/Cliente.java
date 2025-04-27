@@ -70,7 +70,7 @@ public class Cliente {
         System.out.println("-- Cambiamos los datos de el libro hola ");
         service.getLibroId(lId1);
         System.out.println("-- Cambiamos el titulo y los autores por ejemplo");
-        service.putLibro(lId1, "Hola como estas", null, null, null, null);
+        service.putLibro(lId1, "Hola como estas", new String[]{"JUAN"}, null, null, null);
         service.getLibroId(lId1);
 
         // POST de prestamos
@@ -137,7 +137,10 @@ public class Cliente {
 
         // Actividad
         System.out.println("-- Vemos la actividad de usuario con id " + uId3);
+        System.out.println("-- despues de que el usuario haya devuelto uno de los libros ");
+        service.postPrestamoDevolucion(pId3);
         service.getUsuarioId(uId3);
+        System.out.println();
 
         // Deletes
         System.out.println();
@@ -152,6 +155,7 @@ public class Cliente {
 
         System.out.println("-- Delete Libro" + lId3);
         service.deleteLibro(lId3);
+        System.out.println();
 
         System.out.println("-- Delete usuario" + uId1);
         service.deleteUsuario(uId1);

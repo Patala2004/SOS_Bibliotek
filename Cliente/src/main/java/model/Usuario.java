@@ -8,6 +8,8 @@ public class Usuario {
     private String fecha_nacimiento;
     private String email;
     private Date sancionadoHasta;
+    private Libro[] historial;
+    private Libro[] prestamos;
     private ResourceLink _links;
 
     public ResourceLink get_links(){
@@ -36,6 +38,14 @@ public class Usuario {
 
     public Date getSancionadoHasta(){
         return this.sancionadoHasta;
+    }
+
+    public Libro[] getHistorial(){
+        return this.historial;
+    }
+
+    public Libro[] getPrestamos(){
+        return this.prestamos;
     }
 
     public void setNombre(String name){

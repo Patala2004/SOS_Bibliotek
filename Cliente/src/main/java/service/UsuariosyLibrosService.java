@@ -43,11 +43,35 @@ public class UsuariosyLibrosService {
             String selfLink = usuario.get_links().getSelf().getHref();
             System.out.println("id: " + usuario.getId()
              + "\n nombre: " + usuario.getNombre() 
-             + "\n matrícula: " + usuario.getMatricula()
+             + "\n matrÃcula: " + usuario.getMatricula()
              + "\n fecha de nacimiento: " + usuario.getFechaNacimiento()
              + "\n correo: " + usuario.getEmail()
-             + "\n sancionadoHasta: " + usuario.getSancionadoHasta()
-             + "\n se encuentra disponible en el enlace " + selfLink );
+             + "\n sancionadoHasta: " + usuario.getSancionadoHasta());
+            System.out.println("prestamos actuales:");
+            for(Libro libro:usuario.getPrestamos()){
+                String selfLinkLibro = libro.get_links().getSelf().getHref();
+                System.out.println("\tid: " + libro.getId()
+                + "\n\t titulo: " + libro.getTitulo()
+                + "\n\t autores: " + Arrays.toString(libro.getAutores())
+                + "\n\t edicion: " + libro.getEdicion()
+                + "\n\t ISBN: " + libro.getISBN()
+                + "\n\t editorial: " + libro.getEditorial()
+                + "\n\t disponible: " + libro.getDisponible()
+                + "\n\t se encuentra disponible en el enlace " + selfLinkLibro );
+            }
+            System.out.println("historial de prestamos:");
+            for(Libro libro:usuario.getHistorial()){
+                String selfLinkLibro = libro.get_links().getSelf().getHref();
+                System.out.println("\tid: " + libro.getId()
+                + "\n\t titulo: " + libro.getTitulo()
+                + "\n\t autores: " + Arrays.toString(libro.getAutores())
+                + "\n\t edicion: " + libro.getEdicion()
+                + "\n\t ISBN: " + libro.getISBN()
+                + "\n\t editorial: " + libro.getEditorial()
+                + "\n\t disponible: " + libro.getDisponible()
+                + "\n\t se encuentra disponible en el enlace " + selfLinkLibro );
+            }
+            System.out.println(" se encuentra disponible en el enlace: "+selfLink);
         }
     }
     //METODO GET DEL BASICO DE LOS USUARIOS
