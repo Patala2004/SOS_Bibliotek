@@ -66,6 +66,7 @@ public class LibroController {
         Libro libro = service.buscarPorId(id)
         .orElseThrow(() -> new LibroNotFoundException(id));
 
+
         libro.add(linkTo(methodOn(LibroController.class).getLibro(id)).withSelfRel());
         return ResponseEntity.ok(libro);
     }
@@ -85,13 +86,13 @@ public class LibroController {
 
     // Put libro/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<Void> replaceLibro(@Valid @RequestBody Libro newLibro, @PathVariable Integer id) {
+    public ResponseEntity<Void> replaceLibro(@Valid @RequestBody LibroPutDTO newLibro, @PathVariable Integer id) {
         service.buscarPorId(id).map(libro -> {
-            libro.setTitulo(newLibro.getTitulo());
-            libro.setAutores(newLibro.getAutores());
-            libro.setEdicion(newLibro.getEdicion());
-            libro.setISBN(newLibro.getISBN());
-            libro.setEditorial(newLibro.getEditorial());
+            if(newLibro.getTitulo() != null) libro.setTitulo(newLibro.getTitulo());
+            if(newLibro.getAutores() != null) libro.setAutores(newLibro.getAutores());
+            if(newLibro.getEdicion() != null) libro.setEdicion(newLibro.getEdicion());
+            if(newLibro.getISBN() != null) libro.setISBN(newLibro.getISBN());
+            if(newLibro.getEditorial() != null) libro.setEditorial(newLibro.getEditorial());
             return service.crearLibro(libro);
         }).orElseThrow(() -> new LibroNotFoundException(id));
 
