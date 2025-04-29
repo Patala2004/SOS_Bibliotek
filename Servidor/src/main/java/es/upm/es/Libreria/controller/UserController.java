@@ -127,11 +127,10 @@ public class UserController {
     // Get todos los users
     @GetMapping(value = "", produces = {"application/json", "application/xml"})
     public ResponseEntity<PagedModel<User>> getUsers(
-    @RequestParam(required = false) String starts_with,
     @RequestParam(defaultValue="0", required = false) int page,
     @RequestParam(defaultValue="2", required = false) int size) {
 
-        Page<User> users = service.buscarUsuarios(starts_with, page, size);
+        Page<User> users = service.buscarUsuarios(null, page, size);
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(users, userModelAssembler));
     }
 
