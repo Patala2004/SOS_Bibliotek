@@ -76,7 +76,7 @@ public class UserLibroController {
         }
 
         if(user.getSancionadoHasta() != null){
-            throw new UserSancionadoException(libro.getId());
+            throw new UserSancionadoException(user.getId());
         }
 
         libro.setDisponible(false); // Ya no esta disponible
