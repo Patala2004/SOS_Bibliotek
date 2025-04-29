@@ -5,7 +5,7 @@ public class Usuario {
     private int id;
     private String nombre;
     private Integer matricula;
-    private String fecha_nacimiento;
+    private String fechaNacimiento;
     private String email;
     private Date sancionadoHasta;
     private Libro[] historial;
@@ -29,7 +29,7 @@ public class Usuario {
     }
 
     public String getFechaNacimiento(){
-        return this.fecha_nacimiento;
+        return this.fechaNacimiento;
     }
 
     public String getEmail(){
@@ -61,7 +61,7 @@ public class Usuario {
     }
 
     public void setFechaNacimiento(String fecha){
-        this.fecha_nacimiento = fecha;
+        this.fechaNacimiento = fecha;
     }
 
     public void setEmail(String correo){
