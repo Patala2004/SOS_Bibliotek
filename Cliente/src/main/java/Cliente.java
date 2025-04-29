@@ -28,7 +28,7 @@ public class Cliente {
         System.out.println();
 
         System.out.println("-- Get de todos usuarios");
-        service.getUsuarios("");
+        service.getUsuarios("?size=3");
         System.out.println();
 
         // PUTS de usuarios
@@ -57,13 +57,19 @@ public class Cliente {
         System.out.println("-- Comprobaciones de los gets Libros");
 
         System.out.println("-- Get de todos Libros");
-        service.getLibros("");
+        service.getLibros("?size=3");
         System.out.println();
         System.out.println("-- Get de todos Libros que contengan la a ");
         service.getLibros("?contains=a");
         System.out.println();
+        System.out.println("-- Get de todos Libros que empiecen por Qui ");
+        service.getLibros("?starts_with=Qui");
+        System.out.println();
         System.out.println("-- Get de todos Libros disponibles");
         service.getLibros("?disponible=true");
+        System.out.println();
+        System.out.println("-- Get de un libro");
+        service.getLibroId(lId3);
         System.out.println();
         // PUTS de libros
         System.out.println("-- Comprobaciones de los puts de libros");
@@ -105,13 +111,22 @@ public class Cliente {
 
         System.out.println();
 
-        System.out.println("-- El usuario" + uId3 + " va prestar los dos libro devueltos el dia de despues");
+        System.out.println("-- El usuario" + uId3 + " va prestar los dos libros devueltos el dia de despues");
+        System.out.println("-- Creamos prestamo");
         int pId4 = service.postPrestamo(lId1, uId3);
+        System.out.println("-- Creamos prestamo");
         int pId5 = service.postPrestamo(lId2, uId3);
         service.putTestPrestamoAmpliar(pId4, null,Date.valueOf(LocalDate.now().plusWeeks(1)));
         service.putTestPrestamoAmpliar(pId5, null,Date.valueOf(LocalDate.now().plusWeeks(1)));
+        // GET de prestamos
+        System.out.println();
+        System.out.println("-- Listamos todos los prestamos");
+        service.getPrestamos("?size=5");
+        System.out.println();
 
-
+        System.out.println();
+        System.out.println("-- Obtenemos el prestamo con id " + pId3 );
+        service.getPrestamoId(pId3);
         System.out.println();
         // GET de los prestamos de un usuario
         System.out.println("-- Vemos todos los libros prestados por el usuario con id " + uId3);

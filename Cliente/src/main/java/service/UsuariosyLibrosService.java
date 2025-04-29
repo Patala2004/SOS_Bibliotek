@@ -43,7 +43,7 @@ public class UsuariosyLibrosService {
             String selfLink = usuario.get_links().getSelf().getHref();
             System.out.println("id: " + usuario.getId()
              + "\n nombre: " + usuario.getNombre() 
-             + "\n matrÃcula: " + usuario.getMatricula()
+             + "\n matricula: " + usuario.getMatricula()
              + "\n fecha de nacimiento: " + usuario.getFechaNacimiento()
              + "\n correo: " + usuario.getEmail()
              + "\n sancionadoHasta: " + usuario.getSancionadoHasta());
@@ -90,7 +90,7 @@ public class UsuariosyLibrosService {
 
         System.out.println("id: " + usuario.getId()
              + "\n nombre: " + usuario.getNombre() 
-             + "\n matrícula: " + usuario.getMatricula()
+             + "\n matricula: " + usuario.getMatricula()
              + "\n fecha de nacimiento: " + usuario.getFechaNacimiento()
              + "\n correo: " + usuario.getEmail()
              + "\n se encuentra disponible en el enlace: " + usuario.get_links().getSelf().getHref());
@@ -198,7 +198,7 @@ public class UsuariosyLibrosService {
         for(Usuario usuario:usuarios.get_embedded().getUserList()){
             System.out.println("id: " + usuario.getId()
              + "\n nombre: " + usuario.getNombre() 
-             + "\n matrícula: " + usuario.getMatricula()
+             + "\n matricula: " + usuario.getMatricula()
              + "\n fecha de nacimiento: " + usuario.getFechaNacimiento()
              + "\n correo: " + usuario.getEmail()
              + "\n se encuentra disponible en el enlace: " + usuario.get_links().getSelf().getHref());
