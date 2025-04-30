@@ -418,6 +418,16 @@ public class UsuariosyLibrosService {
         .block();
 
         System.out.println("Libros");
+        System.out.println(
+            " total de libros: " + libros.getPage().getTotalElements()
+            + "\n Pagina actual: " + libros.getPage().getNumber()
+            + "\n Tamano de pagina: " + libros.getPage().getSize()
+            + "\n Numero de paginas: " + libros.getPage().getTotalPages()
+            + "\n Links");
+            if(libros.get_links().getFirst()!=null) System.out.println( " First: " + libros.get_links().getFirst().getHref());
+            if(libros.get_links().getSelf()!=null) System.out.println( " Self: " + libros.get_links().getSelf().getHref());
+            if(libros.get_links().getNext()!=null) System.out.println( " Next: " + libros.get_links().getNext().getHref());
+            if(libros.get_links().getLast()!=null) System.out.println( " Last: " + libros.get_links().getLast().getHref());
         for(Libro libro:libros.get_embedded().getLibroList()){
             System.out.println("id: " + libro.getId()
             + "\n titulo: " + libro.getTitulo()
@@ -449,7 +459,18 @@ public class UsuariosyLibrosService {
         .doOnNext(body -> System.err.println("Error 5xx: "+ body))
         .then(Mono.empty())).bodyToMono(PagePrestamo.class)
         .block();
-
+        
+        System.out.println("Prestamos");
+        System.out.println(
+            " total de prestamos: " + prestamos.getPage().getTotalElements()
+            + "\n Pagina actual: " + prestamos.getPage().getNumber()
+            + "\n Tamano de pagina: " + prestamos.getPage().getSize()
+            + "\n Numero de paginas: " + prestamos.getPage().getTotalPages()
+            + "\n Links");
+            if(prestamos.get_links().getFirst()!=null) System.out.println( " First: " + prestamos.get_links().getFirst().getHref());
+            if(prestamos.get_links().getSelf()!=null) System.out.println( " Self: " + prestamos.get_links().getSelf().getHref());
+            if(prestamos.get_links().getNext()!=null) System.out.println( " Next: " + prestamos.get_links().getNext().getHref());
+            if(prestamos.get_links().getLast()!=null) System.out.println( " Last: " + prestamos.get_links().getLast().getHref());
         for(Prestamo prestamo:prestamos.get_embedded().getUserLibroList()){
             String selfLink = prestamos.get_links().getSelf().getHref();
             System.out.println("id: " + prestamo.getId()
