@@ -27,6 +27,7 @@ public class UsuariosyLibrosService {
 
     //METODO GET USUARIO
     public void getUsuarioId(int usuarioId){
+        System.out.println("/usuarios/" + usuarioId);
         Usuario usuario = webClient.get()
         .uri("/usuarios/" + usuarioId)
         .retrieve()
@@ -76,6 +77,7 @@ public class UsuariosyLibrosService {
     }
     //METODO GET DEL BASICO DE LOS USUARIOS
     public void getUsuariosBasico(int id){
+        System.out.println("/usuarios/" + id +"/basico");
         Usuario usuario = webClient.get()
         .uri("/usuarios/" + id +"/basico")
         .retrieve()
@@ -99,6 +101,7 @@ public class UsuariosyLibrosService {
      
     //METODO POST USUARIO
     public int postUsuario(String nombre,Integer matricula,String fechaNacimiento,String email){
+        System.out.println("/usuarios");
         Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
         usuario.setMatricula(matricula);
@@ -141,6 +144,7 @@ public class UsuariosyLibrosService {
  
     //METODO PUT USUARIO
     public void putUsuario(int usuarioId, String nombre,Integer matricula, String fechaNacimiento, String email){
+        System.out.println("/usuarios/" + usuarioId);
         Usuario usuario = new Usuario();
         if(nombre == null && matricula == null && fechaNacimiento == null && email == null){
             System.out.println("Cambia algun dato para hacer put");
@@ -167,6 +171,7 @@ public class UsuariosyLibrosService {
  
     //METODO DELETE USUARIO
     public void deleteUsuario(int usuarioId){
+        System.out.println("/usuarios/" + usuarioId);
         webClient.delete()
         .uri("/usuarios/{id}", usuarioId)
         .retrieve()
@@ -182,6 +187,7 @@ public class UsuariosyLibrosService {
    
     //METODO GET DE LOS USUARIOS EN DISTINTAS PAGS Y SIZE
     public void getUsuarios(String params){
+        System.out.println("/usuarios" + params);
         PageUsuario usuarios = webClient.get()
         .uri("/usuarios" + params)
         .retrieve()
@@ -195,6 +201,16 @@ public class UsuariosyLibrosService {
         .block();
 
         System.out.println("Usuarios");
+        System.out.println(
+            " total de usuarios: " + usuarios.getPage().getTotalElements()
+            + "\n Pagina actual: " + usuarios.getPage().getNumber()
+            + "\n Tamano de pagina: " + usuarios.getPage().getSize()
+            + "\n Numero de paginas: " + usuarios.getPage().getTotalPages()
+            + "\n Links");
+            if(usuarios.get_links().getFirst()!=null) System.out.println( " First: " + usuarios.get_links().getFirst().getHref());
+            if(usuarios.get_links().getSelf()!=null) System.out.println( " Self: " + usuarios.get_links().getSelf().getHref());
+            if(usuarios.get_links().getNext()!=null) System.out.println( " Next: " + usuarios.get_links().getNext().getHref());
+            if(usuarios.get_links().getLast()!=null) System.out.println( " Last: " + usuarios.get_links().getLast().getHref());
         for(Usuario usuario:usuarios.get_embedded().getUserList()){
             System.out.println("id: " + usuario.getId()
              + "\n nombre: " + usuario.getNombre() 
@@ -207,6 +223,7 @@ public class UsuariosyLibrosService {
 
     //METODO GET DEL HISTORICO DE LOS USUARIOS
     public void getUsuariosPrestamos(int id, String params){
+        System.out.println("/usuarios/" + id +"/prestamos" + params);
         PagePrestamo prestamos = webClient.get()
         .uri("/usuarios/" + id +"/prestamos" + params)
         .retrieve()
@@ -238,6 +255,7 @@ public class UsuariosyLibrosService {
 
     //METODO GET DEL HISTORICO DE LOS USUARIOS
     public void getUsuariosHistorico(int id){
+        System.out.println("/usuarios/" + id +"/historico");
         PageLibros libros = webClient.get()
         .uri("/usuarios/" + id +"/historico")
         .retrieve()
@@ -269,6 +287,7 @@ public class UsuariosyLibrosService {
 
     //METODO GET LIBRO
     public void getLibroId(int libroId){
+        System.out.println("/libros/" + libroId);
         Libro libro = webClient.get()
         .uri("/libros/" + libroId)
         .retrieve()
@@ -296,6 +315,7 @@ public class UsuariosyLibrosService {
 
     //METODO POST LIBRO
     public int postLibro(String titulo,String[]autores,int edicion,String ISBN, String editorial,boolean disponible){
+        System.out.println("/libros");
         Libro libro = new Libro();
         libro.setTitulo(titulo);
         libro.setAutores(autores);
@@ -340,6 +360,7 @@ public class UsuariosyLibrosService {
 
     //METODO PUT LIBRO
     public void putLibro(int libroId, String titulo,String[]autores,Integer edicion,String ISBN, String editorial){
+        System.out.println("/libros/" + libroId);
         Libro libro = new Libro();
         if(titulo == null && autores == null && edicion == null && ISBN == null && editorial == null){
             System.out.println("Cambia algun dato para hacer put");
@@ -367,6 +388,7 @@ public class UsuariosyLibrosService {
 
     //METODO DELETE LIBRO
     public void deleteLibro(int libroId){
+        System.out.println("/libros/" + libroId);
         webClient.delete()
         .uri("/libros/" + libroId)
         .retrieve()
@@ -382,6 +404,7 @@ public class UsuariosyLibrosService {
 
     //METODO GET LIBROS
     public void getLibros(String params){
+        System.out.println("/libros" + params);
         PageLibros libros = webClient.get()
         .uri("/libros" + params)
         .retrieve()
@@ -414,6 +437,7 @@ public class UsuariosyLibrosService {
 
     //METODO GET PRESTAMO
      public void getPrestamos(String params){
+        System.out.println("/prestamos" + params);
         PagePrestamo prestamos = webClient.get()
         .uri("/prestamos" + params)
         .retrieve()
@@ -450,6 +474,7 @@ public class UsuariosyLibrosService {
 
     //METODO GET PRESTAMO ID
     public void getPrestamoId(int prestamoId){
+        System.out.println("/prestamos/" + prestamoId);
         Prestamo prestamo = webClient.get()
         .uri("/prestamos/" + prestamoId)
         .retrieve()
@@ -486,6 +511,7 @@ public class UsuariosyLibrosService {
 
     //METODO POST PRESTAMO
     public int postPrestamo(int idLibro,int idUsuario){
+        System.out.println("/prestamos");
         Prestamo prestamo = new Prestamo();
         prestamo.setLibroId(idLibro);
         prestamo.setUserId(idUsuario);
@@ -526,6 +552,7 @@ public class UsuariosyLibrosService {
  
     //METODO PUT PRESTAMO AMPLIAR
     public void putPrestamoAmpliar(int id,Date fechaFin){
+        System.out.println("/prestamos/" + id);
         Prestamo prestamo = new Prestamo();
         if(fechaFin == null){
             System.out.println("Cambia algun dato para hacer put");
@@ -549,6 +576,7 @@ public class UsuariosyLibrosService {
     
     //METODO POST PRESTAMO DEVOLUCION
     public void postPrestamoDevolucion(int id){
+        System.out.println("/prestamos/" + id + "/devolver");
         Prestamo prestamo = new Prestamo();
         Date fechaDevolucion = java.sql.Date.valueOf(java.time.LocalDate.now());
         prestamo.setFechaDevolucion(fechaDevolucion);
