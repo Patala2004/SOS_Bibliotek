@@ -95,6 +95,7 @@ public class UsuariosyLibrosService {
              + "\n matricula: " + usuario.getMatricula()
              + "\n fecha de nacimiento: " + usuario.getFechaNacimiento()
              + "\n correo: " + usuario.getEmail()
+             + "\n sancionadoHasta: " + usuario.getSancionadoHasta()
              + "\n se encuentra disponible en el enlace: " + usuario.get_links().getSelf().getHref());
     }
         

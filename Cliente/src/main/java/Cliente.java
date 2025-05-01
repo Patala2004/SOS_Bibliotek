@@ -108,7 +108,8 @@ public class Cliente {
         service.postPrestamoDevolucion(pId2);
 
         service.getPrestamoId(pId2);
-
+        System.out.println("******Vemos como el usuario " + uId2 + " se le ha aplicado una sancion******");
+        service.getUsuariosBasico(uId2);
         System.out.println();
 
         System.out.println("******El usuario" + uId3 + " va prestar los dos libros devueltos el dia de despues******");
