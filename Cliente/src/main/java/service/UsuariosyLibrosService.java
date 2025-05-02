@@ -212,6 +212,10 @@ public class UsuariosyLibrosService {
             if(usuarios.get_links().getSelf()!=null) System.out.println( " Self: " + usuarios.get_links().getSelf().getHref());
             if(usuarios.get_links().getNext()!=null) System.out.println( " Next: " + usuarios.get_links().getNext().getHref());
             if(usuarios.get_links().getLast()!=null) System.out.println( " Last: " + usuarios.get_links().getLast().getHref());
+            if(usuarios.get_embedded() == null){
+                System.out.println("No se han encontrado usuarios");
+                return;
+            }
         for(Usuario usuario:usuarios.get_embedded().getUserList()){
             System.out.println("id: " + usuario.getId()
              + "\n nombre: " + usuario.getNombre() 
@@ -229,10 +233,10 @@ public class UsuariosyLibrosService {
         .uri("/usuarios/" + id +"/prestamos" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error 4xx (" + response.statusCode().value() + "): " + body))
         .then(Mono.empty())) // Permite continuar la ejecución
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
+        .doOnNext(body -> System.err.println("Error 5xx (" + response.statusCode().value() + "): " + body))
         .then(Mono.empty()))
         .bodyToMono(PagePrestamo.class)
         .block();
@@ -429,6 +433,10 @@ public class UsuariosyLibrosService {
             if(libros.get_links().getSelf()!=null) System.out.println( " Self: " + libros.get_links().getSelf().getHref());
             if(libros.get_links().getNext()!=null) System.out.println( " Next: " + libros.get_links().getNext().getHref());
             if(libros.get_links().getLast()!=null) System.out.println( " Last: " + libros.get_links().getLast().getHref());
+            if(libros.get_embedded() == null){
+                System.out.println("No se han encontrado libros");
+                return;
+            }
         for(Libro libro:libros.get_embedded().getLibroList()){
             System.out.println("id: " + libro.getId()
             + "\n titulo: " + libro.getTitulo()
@@ -472,6 +480,10 @@ public class UsuariosyLibrosService {
             if(prestamos.get_links().getSelf()!=null) System.out.println( " Self: " + prestamos.get_links().getSelf().getHref());
             if(prestamos.get_links().getNext()!=null) System.out.println( " Next: " + prestamos.get_links().getNext().getHref());
             if(prestamos.get_links().getLast()!=null) System.out.println( " Last: " + prestamos.get_links().getLast().getHref());
+            if(prestamos.get_embedded() == null){
+                System.out.println("No se han encontrado prestamos");
+                return;
+            }
         for(Prestamo prestamo:prestamos.get_embedded().getUserLibroList()){
             String selfLink = prestamos.get_links().getSelf().getHref();
             System.out.println("id: " + prestamo.getId()

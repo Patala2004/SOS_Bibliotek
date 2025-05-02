@@ -8,14 +8,39 @@ public class Cliente {
     static UsuariosyLibrosService service = new UsuariosyLibrosService();
 
     public static void main(String[] args){
+
+        //Manejo de errores
+        System.out.println("******Manejo de errores******");
+        System.out.println();
+        System.out.println("******Caso 1: Error en la operacion GET******");
+        service.getUsuarios("");
+        service.getLibros("");
+        service.getPrestamos("");
+        System.out.println();
+        System.out.println("******Caso 2: Error en la operacion GET Id******");
+        service.getUsuarioId(-1);
+        service.getLibroId(-1);
+        service.getPrestamoId(-1);
+        System.out.println();
+        System.out.println("******Caso 3: Error en la operacion PUT******");
+        service.putUsuario(2,"hello",null,null,null);
+        service.putLibro(5,"zumo",null,null,null,null);
+        service.putPrestamoAmpliar(-1,null);
+        System.out.println();
+        System.out.println("******Caso 4: Error en la operacion POST******");
+        service.postUsuario("Zumo",null,null,null);
+        service.postLibro("Las aventuras de Zumo",null,3,null,null,false);
+        service.postPrestamo(-1,-1);
+        System.out.println();
+
         // Usuarios
         System.out.println("******POST usuarios******");
         System.out.println("******Creamos usuario******");
         int uId1 = service.postUsuario("pepe",220121,"2001-12-02","pepe@gmail.com");
-
+        System.out.println();
         System.out.println("******Creamos usuario******");
         int uId2 = service.postUsuario("carlos",220021,"2001-11-02","carlos@gmail.com");
-
+        
         System.out.println("******Creamos usuario******");
         int uId3 = service.postUsuario("miguel",220131,"2001-09-20","miguel@gmail.com");
         System.out.println();
