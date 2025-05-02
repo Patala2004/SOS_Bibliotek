@@ -32,15 +32,16 @@ public class UsuariosyLibrosService {
         .uri("/usuarios/" + usuarioId)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())
         )
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: "+ body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())).bodyToMono(Usuario.class)
         .block();
 
         if(usuario != null){
+            System.out.println("200 OK");
             String selfLink = usuario.get_links().getSelf().getHref();
             System.out.println("id: " + usuario.getId()
              + "\n nombre: " + usuario.getNombre() 
@@ -82,14 +83,18 @@ public class UsuariosyLibrosService {
         .uri("/usuarios/" + id +"/basico")
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())) // Permite continuar la ejecución
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty()))
         .bodyToMono(Usuario.class)
         .block();
 
+        if(usuario == null){
+            return;
+        }
+        System.out.println("200 OK");
         System.out.println("id: " + usuario.getId()
              + "\n nombre: " + usuario.getNombre() 
              + "\n matricula: " + usuario.getMatricula()
@@ -115,10 +120,10 @@ public class UsuariosyLibrosService {
             .body(Mono.just(usuario),Usuario.class)
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.err.println("Error 4xx: " + body))
+            .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
             .then(Mono.empty()))
             .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.err.println("Error 5xx: " + body))
+            .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
             .then(Mono.empty()))
             .toBodilessEntity()
             .map(response -> {
@@ -130,6 +135,7 @@ public class UsuariosyLibrosService {
             })
             .block();
             if (referencia != null) {
+                System.out.println("201 CREATED");
                 System.out.println("Referencia: " + referencia);
                 String[] partes = referencia.split("/");
                 String idStr = partes[partes.length - 1];
@@ -145,6 +151,7 @@ public class UsuariosyLibrosService {
  
     //METODO PUT USUARIO
     public void putUsuario(int usuarioId, String nombre,Integer matricula, String fechaNacimiento, String email){
+        try{
         System.out.println("/usuarios/" + usuarioId);
         Usuario usuario = new Usuario();
         if(nombre == null && matricula == null && fechaNacimiento == null && email == null){
@@ -161,29 +168,38 @@ public class UsuariosyLibrosService {
         .body(Mono.just(usuario),Usuario.class)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .toBodilessEntity()
         .block();
+        System.out.println("204 NO CONTENT");
+        }catch(Exception e){
+            
+        }
     }
  
     //METODO DELETE USUARIO
     public void deleteUsuario(int usuarioId){
+        try{
         System.out.println("/usuarios/" + usuarioId);
         webClient.delete()
         .uri("/usuarios/{id}", usuarioId)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .toBodilessEntity()
         .block();
+        System.out.println("204 NO CONTENT");
+        }catch(Exception e){
+            
+        }
     }
    
     //METODO GET DE LOS USUARIOS EN DISTINTAS PAGS Y SIZE
@@ -193,14 +209,18 @@ public class UsuariosyLibrosService {
         .uri("/usuarios" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())) // Permite continuar la ejecución
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty()))
         .bodyToMono(PageUsuario.class)
         .block();
 
+        if(usuarios == null){
+            return;
+        }
+        System.out.println("200 OK");
         System.out.println("Usuarios");
         System.out.println(
             " total de usuarios: " + usuarios.getPage().getTotalElements()
@@ -233,14 +253,19 @@ public class UsuariosyLibrosService {
         .uri("/usuarios/" + id +"/prestamos" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx (" + response.statusCode().value() + "): " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())) // Permite continuar la ejecución
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx (" + response.statusCode().value() + "): " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty()))
         .bodyToMono(PagePrestamo.class)
         .block();
 
+        if(prestamos == null){ 
+            System.out.println("Este usuario no tiene prestamos");
+            return;
+        }
+        System.out.println("200 OK");
         System.out.println("Prestamos");
         for(Prestamo prestamo:prestamos.get_embedded().getUserLibroList()){
             System.out.println("id: " + prestamo.getId()
@@ -265,14 +290,19 @@ public class UsuariosyLibrosService {
         .uri("/usuarios/" + id +"/historico")
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())) // Permite continuar la ejecución
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty()))
         .bodyToMono(PageLibros.class)
         .block();
 
+        if(libros == null){ 
+            System.out.println("Este usuario no tiene libros historicos");
+            return;
+        }
+        System.out.println("200 OK");
         System.out.println("Libros");
         for(Libro libro:libros.get_embedded().getLibroList()){
             System.out.println("id: " + libro.getId()
@@ -297,15 +327,16 @@ public class UsuariosyLibrosService {
         .uri("/libros/" + libroId)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())
         )
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: "+ body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())).bodyToMono(Libro.class)
         .block();
 
         if(libro != null){
+            System.out.println("200 OK");
             String selfLink = libro.get_links().getSelf().getHref();
             System.out.println("id: " + libro.getId()
             + "\n titulo: " + libro.getTitulo()
@@ -335,10 +366,10 @@ public class UsuariosyLibrosService {
             .body(Mono.just(libro),Libro.class)
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.err.println("Error 4xx: " + body))
+            .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
             .then(Mono.empty()))
             .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.err.println("Error 5xx: " + body))
+            .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
             .then(Mono.empty()))
             .toBodilessEntity()
             .map(response -> {
@@ -350,6 +381,7 @@ public class UsuariosyLibrosService {
             })
             .block();
             if (referencia != null) {
+                System.out.println("201 CREATED");
                 System.out.println("Referencia: " + referencia);
                 String[] partes = referencia.split("/");
                 String idStr = partes[partes.length - 1];
@@ -365,6 +397,7 @@ public class UsuariosyLibrosService {
 
     //METODO PUT LIBRO
     public void putLibro(int libroId, String titulo,String[]autores,Integer edicion,String ISBN, String editorial){
+        try{
         System.out.println("/libros/" + libroId);
         Libro libro = new Libro();
         if(titulo == null && autores == null && edicion == null && ISBN == null && editorial == null){
@@ -382,29 +415,39 @@ public class UsuariosyLibrosService {
         .body(Mono.just(libro),Libro.class)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .toBodilessEntity()
         .block();
+        System.out.println("204 NO CONTENT");
+        }catch(Exception e){
+            
+        }
     }
 
     //METODO DELETE LIBRO
     public void deleteLibro(int libroId){
+        try{
         System.out.println("/libros/" + libroId);
         webClient.delete()
         .uri("/libros/" + libroId)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .toBodilessEntity()
         .block();
+        System.out.println("204 NO CONTENT");
+        }catch(Exception e){
+            
+        }
+        
     }
 
     //METODO GET LIBROS
@@ -414,14 +457,18 @@ public class UsuariosyLibrosService {
         .uri("/libros" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())) // Permite continuar la ejecución
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty()))
         .bodyToMono(PageLibros.class)
         .block();
 
+        if(libros == null){
+            return;
+        }
+        System.out.println("200 OK");
         System.out.println("Libros");
         System.out.println(
             " total de libros: " + libros.getPage().getTotalElements()
@@ -461,7 +508,7 @@ public class UsuariosyLibrosService {
         .uri("/prestamos" + params)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())
         )
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
@@ -469,6 +516,10 @@ public class UsuariosyLibrosService {
         .then(Mono.empty())).bodyToMono(PagePrestamo.class)
         .block();
         
+        if(prestamos == null){
+            return;
+        }
+        System.out.println("200 OK");
         System.out.println("Prestamos");
         System.out.println(
             " total de prestamos: " + prestamos.getPage().getTotalElements()
@@ -513,7 +564,7 @@ public class UsuariosyLibrosService {
         .uri("/prestamos/" + prestamoId)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty())
         )
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
@@ -522,6 +573,7 @@ public class UsuariosyLibrosService {
         .block();
 
         if(prestamo != null){
+            System.out.println("200 OK");
             String selfLink = prestamo.get_links().getSelf().getHref();
             System.out.println("id: " + prestamo.getId()
             + "\n id_libro: " + prestamo.getLibro().getId()
@@ -556,10 +608,10 @@ public class UsuariosyLibrosService {
             .body(Mono.just(prestamo),Prestamo.class)
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.err.println("Error 4xx: " + body))
+            .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
             .then(Mono.empty()))
             .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.err.println("Error 5xx: " + body))
+            .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
             .then(Mono.empty()))
             .toBodilessEntity()
             .map(response -> {
@@ -571,6 +623,7 @@ public class UsuariosyLibrosService {
             })
             .block();
             if (referencia != null) {
+                System.out.println("201 CREATED");
                 System.out.println("Referencia: " + referencia);
                 String[] partes = referencia.split("/");
                 String idStr = partes[partes.length - 1];
@@ -586,10 +639,11 @@ public class UsuariosyLibrosService {
  
     //METODO PUT PRESTAMO AMPLIAR
     public void putPrestamoAmpliar(int id,Date fechaFin){
+        try{
         System.out.println("/prestamos/" + id);
         Prestamo prestamo = new Prestamo();
         if(fechaFin == null){
-            System.out.println("Cambia algun dato para hacer put");
+            System.out.println("Tiene que tener una fecha en el cuerpo de la peticion para ampliar");
             return;
         }
         prestamo.setFechaFin(fechaFin);
@@ -599,13 +653,18 @@ public class UsuariosyLibrosService {
         .body(Mono.just(prestamo),Prestamo.class)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
-        .then(Mono.empty()))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
+        .then(Mono.error(new IllegalStateException())))
         .toBodilessEntity()
         .block();
+
+        System.out.println("204 NO CONTENT");
+        }catch(Exception e){
+            
+        }
     }
     
     //METODO POST PRESTAMO DEVOLUCION
@@ -621,15 +680,15 @@ public class UsuariosyLibrosService {
             .body(Mono.just(prestamo),Prestamo.class)
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.err.println("Error 4xx: " + body))
+            .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
             .then(Mono.empty()))
             .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.err.println("Error 5xx: " + body))
+            .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
             .then(Mono.empty()))
             .toBodilessEntity()
             .map(response -> {
                 if(response.getStatusCode().is2xxSuccessful()){
-                    return "Devolucion: " + response.getStatusCode().toString();
+                    return response.getStatusCode().toString();
                 }   else{
                     throw new RuntimeException("No completo la solicitud");
                 }
@@ -656,10 +715,10 @@ public class UsuariosyLibrosService {
         .body(Mono.just(prestamo),Prestamo.class)
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 4xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty()))
         .onStatus(HttpStatusCode::is5xxServerError, response -> response.bodyToMono(String.class)
-        .doOnNext(body -> System.err.println("Error 5xx: " + body))
+        .doOnNext(body -> System.err.println("Error " + response.statusCode().value() + ": " + body))
         .then(Mono.empty()))
         .toBodilessEntity()
         .block();

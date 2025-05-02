@@ -9,29 +9,6 @@ public class Cliente {
 
     public static void main(String[] args){
 
-        //Manejo de errores
-        System.out.println("******Manejo de errores******");
-        System.out.println();
-        System.out.println("******Caso 1: Error en la operacion GET******");
-        service.getUsuarios("");
-        service.getLibros("");
-        service.getPrestamos("");
-        System.out.println();
-        System.out.println("******Caso 2: Error en la operacion GET Id******");
-        service.getUsuarioId(-1);
-        service.getLibroId(-1);
-        service.getPrestamoId(-1);
-        System.out.println();
-        System.out.println("******Caso 3: Error en la operacion PUT******");
-        service.putUsuario(2,"hello",null,null,null);
-        service.putLibro(5,"zumo",null,null,null,null);
-        service.putPrestamoAmpliar(-1,null);
-        System.out.println();
-        System.out.println("******Caso 4: Error en la operacion POST******");
-        service.postUsuario("Zumo",null,null,null);
-        service.postLibro("Las aventuras de Zumo",null,3,null,null,false);
-        service.postPrestamo(-1,-1);
-        System.out.println();
 
         // Usuarios
         System.out.println("******POST usuarios******");
@@ -115,6 +92,35 @@ public class Cliente {
 
         System.out.println("******Creamos prestamo******");
         int pId3 = service.postPrestamo(lId3, uId3);
+        //Manejo de errores
+        System.out.println("******Manejo de errores******");
+        System.out.println();
+        System.out.println("******Caso 1: Error en la operacion GET******");
+        service.getUsuarios("dsadsa");
+        service.getLibros("fdsas");
+        service.getPrestamos("dsadsa");
+        System.out.println();
+        System.out.println("******Caso 2: Error en la operacion GET Id******");
+        service.getUsuarioId(-1);
+        service.getLibroId(-1);
+        service.getPrestamoId(-1);
+        System.out.println();
+        System.out.println("******Caso 3: Error en la operacion PUT******");
+        service.putUsuario(-1,"hello",null,null,null);
+        service.putLibro(-1,"zumo",null,null,null,null);
+        service.putPrestamoAmpliar(-1,Date.valueOf(LocalDate.now()));
+        System.out.println();
+        System.out.println("******Caso 4: Error en la operacion POST******");
+        service.postUsuario("Zumo",null,null,null);
+        service.postLibro("Las aventuras de Zumo",null,3,null,null,false);
+        service.postPrestamo(-1,-1);
+        System.out.println("******Caso 5: Error en la operacion GET de historicos(no hay historicos)******");
+        service.getUsuariosHistorico(-1);
+        System.out.println();
+
+
+        System.out.println("******Fin de manejo de errores******");
+        System.out.println();
 
         // Devolucion
         System.out.println("******Devolvemos el prestamo correctamente******");
