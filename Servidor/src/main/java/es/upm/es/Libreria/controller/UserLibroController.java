@@ -125,12 +125,6 @@ public class UserLibroController {
             result = "el libro se ha devuelto a tiempo. Fecha: " + prestamo.getFechaDevolucion();
         }
 
-        
-
-        if(prestamo.getFechaDevolucion() == null){
-            return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
-        }
-
         service.guardarPrestamo(prestamo);
 
         // Poner libro como disponible otra vez
